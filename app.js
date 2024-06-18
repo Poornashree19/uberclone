@@ -332,11 +332,15 @@ app.post('/login', async (req, res) => {
 });
 
 
-mongoose.connect("mongodb://localhost:27017/uberclone")
+mongoose.connect(process.env.MONGO_DB_URL)
     .then(() => {
+
+        const PORT =process?.env?.PORT ?? 8080;
+
         console.log("connected to db");
-        app.listen(process?.env?.PORT ?? 8080, () => {
-            console.log("server is running");
+
+        app.listen(PORT, () => {
+            console.log("server is running on port : ",PORT );
         });
     })
     .catch(() => {
