@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBER</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <body style="background-color:white;"> -->
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .topnav {
+            overflow: hidden;
+            background-color: black;
+            margin-inline: 22px;
+            margin-top: 2px;
+        }
+        .topnav a {
+            float: left;
+            color: silver;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            
+        }
+        /* .topnav a:hover {
+            /* background-color: silver;  */
+            /* color: black; */
+    
+        .topnav a.active {
+            background-color: black;
+            color: silver;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background-color: black;
+            color: silver;
+        }
+        nav .right {
+            display: flex;
+        }
+        nav .left {
+            display: flex;
+        }
+        .left img {
+            margin-top: -11px;
+            width: 100%;
+        }
+        .left p {
+            margin-inline: 22px;
+            margin-top: 21px;
+        }
+        .right a {
+            margin-inline: 22px;
+            margin-top: 21px;
+        }
+        .right i {
+            margin-top: 22px;
+            font-size: 22px;
+        }
+        .right button {
+            width: 100px;
+            height: 36px;
+            background-color: #fff;
+            color: black;
+            font-weight: 600;
+            border: none;
+            border-radius: 22px;
+            margin-top: 21px;
+        }
+        .right button:hover {
+            background-attachment: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        .card {
+            background-image: url(https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_1098,h_618/v1613521717/assets/7a/fd8982-6884-49b9-bb5f-28e6ff2cc0e8/original/Rider_Home_bg_tablet.png);
+            background-repeat: no-repeat;
+            background-size: 1600px;
+            height: 600px;
+            padding: 3%;
+        }
+        .main {
+            width: 400px;
+            height: 400px;
+            margin-left: 44px;
+            background-color: #fff;
+        }
+        .main .icon {
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid rgb(224,223,223);
+        }
+        .main .icon .car {
+            margin-inline: 70px;
+            margin-top: 20px;
+            border-bottom: 3px solid black;
+        }
+        .container {
+            background-color: silver;
+            position: relative;
+            border-radius: 10px;
+            background-color: silver;
+            padding: 20px 0 30px 0;
+            top: 15%;
+            width: 30%;
+            margin: 150px auto;
+            margin-top: 1px;
+            text-align: center;
+        }
+        .container .icon {
+            margin-bottom: 20px;
+        }
+        .container .icon .car {
+            display: inline-block;
+            margin-top: 40px;
+        }
+        .container .icon .car i {
+            font-size: 30px;
+        }
+        .card h1 {
+            padding: 33px;
+            font-size: 33px;
+        }
+        .card input {
+            width: 330px;
+            height: 30px;
+            background-color: rgb(235,232,232);
+            padding: 8px;
+            margin-top: 4px;
+            border: none;
+            margin-left: 33px;
+        }
+        .card .btn {
+            margin-left: 33px;
+            margin-top: 44px;
+        }
+        .card .btn .fr {
+            width: 140px;
+            height: 36px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-inline: 10px;
+        }
+        .card .btn button {
+            width: 140px;
+            height: 36px;
+            background-color: rgb(190,188,188);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-inline: 10px;
+        }
+        .head h1 {
+            padding: 33px;
+            font-size: 43px;
+        }
+        .ride .uber {
+            display: flex;
+            justify-content: space-around;
+        }
+        .uber .auto {
+            display: flex;
+            margin-top: 33px;
+        }
+        .uber .auto img {
+            margin-inline: 33px;
+            width: 43px;
+        }
+        ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color:black;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: silver;
+  text-align: left;
+  padding: 18px 20px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: silver;
+}
+.dropbtn {
+  background-color: black;
+  color: silver;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: black;
+}
+    </style>
+</head>
+<body style="background-color:white;">
+    <nav>
+     <div class="left"> 
+            
+            <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_84,h_84/v1618459257/assets/13/6bfdbd-cdb6-4221-92c1-cab1feaa39f3/original/Rider-App-logo.png" >
+     </div>
+            <!-- <p>Company</p>
+            <p>Safety</p>
+            <p>Help</p> -->
+            <ul>
+           
+                <li><a href="#company">Company</a></li>
+                <li><a href="#safety">Safety</a></li>
+                <li><a href="#help">Help</a></li>
+                
+              </ul>
+        </div>
+        <div class="topnav">
+            <a href="#">EN</a>
+            <a href="#">Products</a>
+            <a href="/login">Login</a>
+            <a href="/signuppage">Sign-up</a>
+            
+
+    </div>
+    </nav>
+    <div class="card">
+        <div class="container">
+            <div class="icon">
+                <div class="car">
+                    <i class="fa fa-car"></i>
+                    <p>Rider</p>
+                </div>
+            </div>
+            <h1>Request a ride now</h1>
+            <input type="text" placeholder="Enter the pickup location"><br><br>
+            <input type="text" placeholder="Enter Destination">
+            <div class="btn">
+                <button class="fr" type="submit">Request Now</button>
+                <button class="fr" type="submit">Schedule for later</button>
+            </div>
+        </div>
+        <div class="head">
+            <center>
+                <h1>Ride with Uber</h1>
+            </center>
+        </div>
+        <div class="ride">
+            <div class="uber">
+                <div class="auto">
+                    <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_84,h_84/v1649914471/assets/89/8e4239-5e7d-4de7-bf71-00cc32d468db/original/Auto-150X150p4x.png" alt="auto">
+                    <div>
+                        <h2>Uber Auto</h2>
+                        <p>Get affordable uber auto ride with no haggling.</p>
+                    </div>
+                </div>
+                <div class="auto">
+                    <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_84,h_84/v1649914539/assets/86/82f8b3-e2e6-45f8-a8f7-fdc511f709e0/original/Moto-150X150p4x.png" alt="bike">
+                    <div>
+                        <h2>Uber Moto</h2>
+                        <p>Get affordable uber auto ride with no haggling.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="uber">
+                <div class="auto">
+                    <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_84,h_84/v1630531077/assets/38/494083-cc23-4cf7-801c-0deed7d9ca55/original/uber-hourly.png" alt="car">
+                    <div>
+                        <h2>Uber Hourly</h2>
+                        <p>Get affordable uber auto ride with no haggling.</p>
+                    </div>
+                </div>
+                <div class="auto">
+                    <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_84,h_84/v1649914597/assets/f7/7f583f-447a-4cf7-8da6-6ad254f0a66b/original/Intercity-150X150p4x.png" alt="car">
+                    <div>
+                        <h2>Uber Intercity</h2>
+                        <p>Get affordable uber auto ride with no haggling.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="head">
+                <center>
+                    <h1>Focused on safety, wherever you go</h1>
+                </center>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

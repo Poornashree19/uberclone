@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN FORM</title>
+    <style>
+         
+        head{
+               font-weight:bold;
+               color:black;
+               padding:5px;
+               text-align:center;
+
+           }
+           h1{
+              color:black;
+              padding:15px;
+              text-align: center;
+           }
+           h2{
+               color:white;
+               background-color:black;
+               padding:15px;
+               text-align:center;
+           }
+           .left img {
+            margin-top: -11px;
+            width: 100%;
+        }
+       body {
+          
+               padding:0;
+               font-family:Arial,sans-serif;
+               background-color:#f4f4f4;
+               text-align: center;
+               margin: 50px;
+       }
+       .container {
+           max-width: 700px;
+           margin: 0 auto;
+           padding: 20px 15px;
+           background-color: #fff;
+           border-radius: 4px;
+           box-shadow: 0 0 5px 0 rgba(0,0,0,0.1);
+       }
+           
+       .form-group{
+           margin-bottom:20px;
+       }
+        label{
+
+      font-weight:bold;
+       }
+        input{
+          height:20px;
+          width:60%;
+          padding:10px;
+          border:1px solid #ccc;
+          border-radius:5px;
+       }
+       input:focus
+       {
+           border-color:blue;
+           border-bottom-width: 2px;
+
+       }
+        button {
+          height:50%;
+          width:50%;
+          background:none;
+          font-size:18px;
+          font-weight:500;
+          background-color:black;
+          color: white;
+          border:none;
+          border-radius:5px;
+          padding: 10px 15px;
+          cursor: pointer;
+       }
+      
+     </style>
+</head>
+<div class="container">
+    
+<body>
+    <div class="container">
+        
+        
+        <form name="myform"  action="/passenger/login" method="post">
+            <h2>LOGIN</h2>
+            
+            
+          
+            Phone number:<input type="number" name="phone" value="<%=body.phone%>" ><br/><br/> 
+            <%if(errors.phone){%> <label>
+                <%=errors.phone%>
+            </label><br>
+            <%}%><br><br>   
+           
+            Password : <input type="number" name="password" value="<%=body.password %>"><br/><br/>
+            <%if(errors.password){%> <label>
+                <%=errors.password%>
+            </label><br>
+            <%}%><br><br> 
+   
+                 
+            <button type="submit">LOGIN</button>
+        </form>
+    </div>
+    <a href="/" >Back</a>
+</body>
+
+<script>
+    // function validateform() {
+        
+    //     var password = document.myform.password.value;
+       
+    //     var number = document.myform.number.value;
+        
+       
+    //     if (password.length < 6) {
+    //         alert("Password must be at least 6 characters long");
+    //         return false;
+    //     }
+
+      
+
+        
+    //     var phonePattern = /^[0-9]{10}$/;
+    //     if (!phonePattern.test(number)) {
+    //         alert("Please enter a valid 10-digit phone number");
+    //         return false;
+    //     }
+
+    //     return true;
+    // }
+</script>
+    </html>
