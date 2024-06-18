@@ -335,7 +335,7 @@ app.post('/login', async (req, res) => {
 mongoose.connect("mongodb://localhost:27017/uberclone")
     .then(() => {
         console.log("connected to db");
-        app.listen(8080, () => {
+        app.listen(process?.env?.PORT ?? 8080, () => {
             console.log("server is running");
         });
     })
