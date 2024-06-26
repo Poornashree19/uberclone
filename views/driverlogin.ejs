@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOGIN FORM</title>
+    <title>DRIVER LOGIN FORM</title>
     <style>
          
         head{
@@ -32,7 +32,7 @@
                text-align: center;
                margin: 50px;
        }
-       .container {
+       .driver_container {
            max-width: 700px;
            margin: 0 auto;
            padding: 20px 15px;
@@ -77,50 +77,22 @@
       
      </style>
 </head>
-<div class="container">
+<!-- <div class="driver_container"> -->
     
 <body>
-    <div class="container">
+    <div class="driver_container">  
         
         
-        <form name="myform"  action="driverlogin.ejs" method="post" onsubmit="return validateform()">
-            <h2>LOGIN</h2>
-            
-            
-          
+        <form name="driver-myform"  action="/driverlogin" method="post">
+            <h2>DRIVER LOGIN</h2>
             Phone number:<input type="number" name="phone" ><br/><br/>    
             Password : <input type="number" name="password" ><br/><br/>
            
                  
             <button type="submit">LOGIN</button>
-        </form>
+        </form> 
     </div>
     <a href="/" >Back</a>
 </body>
 
-<script>
-    function validateform() {
-        
-        var password = document.myform.password.value;
-       
-        var number = document.myform.number.value;
-        
-       
-        if (password.length < 6) {
-            alert("Password must be at least 6 characters long");
-            return false;
-        }
-
-      
-
-        
-        var phonePattern = /^[0-9]{10}$/;
-        if (!phonePattern.test(number)) {
-            alert("Please enter a valid 10-digit phone number");
-            return false;
-        }
-
-        return true;
-    }
-</script>
     </html>

@@ -34,13 +34,15 @@
             background-color: #f4f4f4;
             text-align: center;
             margin: 50px;
+            color:black;
+            background-color:silver;
         }
 
         .container {
             max-width: 700px;
             margin: 0 auto;
             padding: 20px 15px;
-            background-color: #fff;
+            background-color: white;
             border-radius: 4px;
             box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
         }
@@ -63,7 +65,7 @@
         }
 
         input:focus {
-            border-color: blue;
+            border-color: black;
             border-bottom-width: 2px;
 
         }
@@ -83,13 +85,9 @@
         }
     </style>
 </head>
-<div class="container">
-
     <body>
         <div class="container">
-
-
-            <form name="myform" action="/driverreg" method="post" onsubmit="return validateform()">
+            <form name="myform" action="/driverreg" method="post" >
                 <h2>REGISTER FOR DRIVER</h2>
                 Name : <input type="text" name="name" value="<%=body.name %>"><br /><br />
 
@@ -102,7 +100,7 @@
                         <%if(errors.dob){%> <label>
                                 <%=errors.dob%>
                             </label>
-                            <%}%> <br><br>
+                            <%}%> 
 
                                  License Number: <input type="string" name="license"
                                     value="<%=body.license%>"><br /><br /> 
@@ -111,26 +109,31 @@
                                     placeholder="jpeg"><br /><br />
 
                                 Password : <input type="password" name="password"
-                                    value="<%=body.password%>"><br /><br />
+                                    value="<%=body.password%>"><br><br>
 
                                     <%if(errors.password){%> <label>
                                         <%=errors.password%>
                                     </label><br>
-                                    <%}%><br><br> 
+                                    <%}%>
                                 Confirm Password : <input type="re-enter password" name="cpass"
                                     value="<%=body.cpass%>"><br /><br />
                                     <%if(errors.password){%> <label>
                                         <%=errors.password%>
                                     </label>
-                                    <%}%> <br><br>
+                                    <%}%> 
                                 Phone number:<input type="number" name="phone" value="<%=body.phone%>"><br /><br />
-                                <button type="submit">REGISTER</button>
+                                <%if(errors.phone){%> <label>
+                                    <%=errors.phone%>
+                                </label>
+                                <%}%>
+                                <button type="submit">REGISTER</button><br><br>
+                                <a href="/">Back</a>
             </form>
         </div>
-        <a href="/">Back</a>
+        
     </body>
 
-    <script>
+    <!-- <script>
         function validateform() {
             var name = document.myform.name.value;
             var email = document.myform.email.value;
@@ -187,7 +190,7 @@
 
             return true;
         }
-    </script>
+    </script> -->
     </body>
 
 </html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative travel Guide </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        textarea {
+            width: 300px;
+            height: 100px;
+        }
+        #output {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 300px;
+            height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generative AI Travel Guide</h1>
+    <form name="myform" id="routeForm" action="/chatbot" method="post" >
+    <input type="text" id="prompt" placeholder="Enter your prompt here..."></textarea><br>
+    <button onclick="generateStory()">Generate Story</button>
+    <div id="output"></div>
+
+    <script>
+        async function generateStory() {
+            async function generateStory() {
+            const prompt = document.getElementById('prompt').value;
+            const response = await fetch('/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt })
+            });
+
+            const data = await response.json();
+            document.getElementById('output').innerText = data.text;
+        }
+    }
+    </script>
+</body>
+</html>

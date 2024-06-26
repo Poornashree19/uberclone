@@ -6124,7 +6124,7 @@ pickupInput.onkeyup = function() {
     display(result, 'pickup');
 };
 
-dropoffInput.onkeyup = function() {
+if( dropoffInput?.onkeyup) dropoffInput.onkeyup = function() {
     let result = [];
     let input = dropoffInput.value;
     if (input.length) {

@@ -1,9 +1,12 @@
 require('dotenv').config()
 
+// const { GoogleGenerativeAI } = require('@google/generative-ai');
+
 const express = require('express');
 const mongoose = require('mongoose');
 const Passenger = require('./models/passenger.js');
 const Driver = require('./models/driver.js');
+const Driverlatlng=require('./models/driverlatlng.js');
 const z = require('zod');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -20,9 +23,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 const TOMTOM_API_KEY = process.env.TOMTOM_API_KEY;
+// const Gemini_API_KEY= new GoogleGenerativeAI(process.env.Gemini_API_KEY);
+
+
+
 app.use(express.static('public'))
 
-console.log({ TOMTOM_API_KEY });
+// console.log({ TOMTOM_API_KEY });
+// console.log({ Gemini_API_KEY });
 
 
 app.get('/', (req, res) => {
@@ -38,6 +46,14 @@ const PassengerSchema = z.object({
     cpass: z.string().min(6),
     phone: z.string().length(10),
 });
+
+
+
+
+
+
+
+
 app.get('/signuppage', (req, res) => {
     res.render('signuppage.ejs')
 });
@@ -104,12 +120,11 @@ app.post('/passengerreg', async (req, res) => {
     }
 });
 
-
 app.get('/login', (req, res) => {
     res.render('login.ejs', { body: {}, errors: {} });
 });
 
-app.post('/passenger/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     try {
         const check = await Passenger.find({ phone: req.body.phone, password: req.body.password })
 
@@ -124,11 +139,14 @@ app.post('/passenger/login', async (req, res) => {
 
 
         else {
-            // console.log(6666);
+             
+            console.log(6666);
             const token = jwt.sign({ id: Passenger._id }, 'yourSecretKey', { expiresIn: '24h' });
+            // console.log(token);
             res.cookie('authToken', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
+            // console.log('Set-Cookie: ', res.getHeader('Set-Cookie'));
             // res.send('Login successful and cookie has been set');
-            res.render('location.ejs', { body: {}, TOMTOM_API_KEY: TOMTOM_API_KEY });
+             res.render('location.ejs', { body: {}, TOMTOM_API_KEY: TOMTOM_API_KEY });
 
         }
     }
@@ -152,7 +170,6 @@ app.post('/passenger/login', async (req, res) => {
     }
 
 });
-
 app.get('/location', (req, res) => {
     res.render('location.ejs', { body: {}, TOMTOM_API_KEY });
 });
@@ -160,8 +177,59 @@ app.get('/location', (req, res) => {
 app.post('/location', async (req, res) => {
     console.log(11);
     res.render('location.ejs', { body: req.body, TOMTOM_API_KEY: TOMTOM_API_KEY });
+    try {
+        console.log(11); 
+        console.log("req.body:", req.body);
+    
+        const { lat, lon } = req.body;
+        const transform = {
+            address: "Some default address",  
+            pickupCoordinates: {
+                type: "Point",
+                coordinates: [lon, lat]
+            }
+        };
+    }catch(err){
+        console.log(err);
+    }
+});
 
-})
+
+
+// app.get('/chatbot',(req,res)=>{
+//     res.render('chatbot.ejs');
+// })
+
+// app.post('/chatbot', async (req, res) => {
+//   try {
+//     const { prompt } = req.body;
+//     const model = Gemini_API_KEY.getGenerativeModel({ model: 'gemini-1.5-flash' });
+//     const result = await model.generateContent(prompt);
+//     console.log(result);  
+    
+//     const text = result.contents[0]?.text || 'No content generated';
+//     res.json({ text });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -208,7 +276,7 @@ app.post('/location', async (req, res) => {
 const DriverSchema = z.object({
     name: z
         .string({ required_error: "name atleast 8 characters" })
-        .min(8).max(16)
+        .min(2).max(16)
         .trim(),
     email: z
         .string({ required_error: "email should not be empty" })
@@ -235,20 +303,21 @@ app.get('/driverreg', (req, res) => {
 app.post('/driverreg', async (req, res) => {
     try {
 
-        console.log(req.body);
+        console.log(req.body,"req.body");
 
-        // const password = req.body.password;
         const { password, cpass } = req.body
+        const check = await Passenger.find({ phone: req.body.phone })
+        if (check.length > 0) { throw { message: 'user already exsists.', type: 'user_exsits' } }
 
+        console.log({ check });
         if (password !== cpass) throw { message: 'Password and confirm password must me equal.', type: 'pass_miss_match' }
-
+        
         const isValidData = DriverSchema.parse(req.body);
-
+        
         const driver = await Driver.create(req.body);
 
-        // res.status(200).json(driver);
-        res.render('login.ejs', { body: {}, errors: [] });
-
+     
+res.redirect("/driverlogin")
 
     } catch (error) {
 
@@ -267,69 +336,97 @@ app.post('/driverreg', async (req, res) => {
             errors.password = error.message;
             errors.cpass = error.message;
         }
+        if (error.type === 'user_exsits') {
+            errors.phone = error.message;
+        }
 
         console.log(error, errors)
+        res.render('driverreg.ejs',{ body: req.body, errors })
 
-        res.render('driverreg.ejs', { body: req.body, errors })
-
-
-
-        //  res.status(500).json({ message: error.message });
     }
 });
 
-app.post('/login', async (req, res) => {
+app.get('/driverlogin',(req,res)=>{
+    res.render('driverlogin.ejs',  { body: {}, errors: {} });
+});
+
+app.post('/driverlogin', async (req, res) => {
     try {
-        console.log(1111);
+        
 
-        const check = await driver.find({ phone: req.body.phone })
+        const check = await Driver.find({ phone: req.body.phone, password: req.body.password })
 
-        const pass = await driver.find({ phone: req.body.password })
 
-        console.log({
-            check,
-            pass
-        });
-
-        if (!check && !pass) {
-            console.log(11);
-            res.send("invalid credentials");
+        if (check.length === 0) {
+            throw { message: 'userphone and password mismatched', type: 'match' }
         }
-
-        else {
-
-            res.cookie('authToken', 'yourAuthTokenHere', { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
-
-            res.send('Login successful and cookie has been set');
+        else if (check == "") {
+            res.send("userphone or password is empty");
         }
-
-
-
-        app.get('/protected', (req, res) => {
-            const authToken = req.cookies.authToken;
-            if (authToken) {
-                res.send('You have access to this protected route');
-            } else {
-                res.status(403).send('You are not authorized to access this route');
-            }
-        });
-
-        //res.render('#');
-
-    }
-
-
-
-
-
+else{
+        const token = jwt.sign({ id: Passenger._id }, 'yourSecretKey', { expiresIn: '24h' });
+        res.cookie('authToken', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
+        res.redirect('/driverlocation');
+}
+ }
     catch (err) {
+ 
+        console.log(req.body);
+        let errors = {}
+        {
+            console.log(err);
 
-        console.log(err);
-        res.send('credientials not found');
+        }
+        if (err.type === 'match') {
+            errors.phone = err.message;
+            errors.password = err.message
+        }
+        console.log(errors)
+
+        res.render('driverlogin.ejs', { body: req.body, errors })
+
+
 
     }
 
 });
+app.get('/driverlocation',(req,res)=>{
+   
+    res.render('driverlocation.ejs',{ body: {}, TOMTOM_API_KEY });
+  console.log(9090);
+})
+
+app.post('/driverlocation', async (req, res) => {
+    console.log(req,"clgs");
+
+    try {
+        console.log(11); 
+        console.log("req.body:", req.body);
+    
+        const { lat, lon } = req.body;
+        const transformedBody = {
+            address: "Some default address",  
+            pickupCoordinates: {
+                type: "Point",
+                coordinates: [lon, lat]
+            }
+        };
+    
+        res.render('driverlocation.ejs', { body: transformedBody, TOMTOM_API_KEY: TOMTOM_API_KEY });
+    
+        const driverlatlng = await Driverlatlng.create(transformedBody);
+        console.log("Driverlatlng saved successfully:", driverlatlng);
+    
+    } catch (error) {
+        console.log(888);
+        console.log(error);
+    }
+    
+    
+    
+});
+
+
 
 
 mongoose.connect(process.env.MONGO_DB_URL)
@@ -343,7 +440,8 @@ mongoose.connect(process.env.MONGO_DB_URL)
             console.log("server is running on port : ",PORT );
         });
     })
-    .catch(() => {
+    .catch((err) => {
+        console.log(err);
         console.log("connection failed");
     });
 

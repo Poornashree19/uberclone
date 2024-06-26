@@ -155,7 +155,7 @@
             <form name="myform" id="routeForm" action="/location" method="post" >
                 <h2>Get a ride</h2>
                 <div class="form-group">
-                    <input type="text" placeholder="Pickup location" id="pickupInput" name="pickup" required autocomplete="off"><br><br>
+                    <input type="text" placeholder="Pickup location" id="pickupInput" name="pickupCoordinates" required autocomplete="off"><br><br>
                     <input type="text" placeholder="Dropoff location" id="dropoffInput" name="dropoff" required autocomplete="off"><br><br>
                     <button type="submit">Request for ride</button>
                     <div class="result-box" id="pickupResultBox"></div>
@@ -182,6 +182,7 @@
         });
 
         let passengerMarker;
+        let pickupCoordinates;
         let routeLayer;
 
         function createMarker(coordinates, popupText) {
@@ -197,25 +198,26 @@
 
         document.getElementById('routeForm').addEventListener('submit', async function (event) {
             event.preventDefault();
+            
 
             const pickupInput = document.getElementById('pickupInput').value;
             const dropoffInput = document.getElementById('dropoffInput').value;
 console.log(pickupInput,"pickup input");
-console.log(dropoffInput,"drop oinput");
+console.log(dropoffInput,"drop input");
             const pickupCoordinates = await getCoordinates(pickupInput);
-            console.log(pickupCoordinates,"picup");
+            console.log(pickupCoordinates,"pickup");
+          
             const dropoffCoordinates = await getCoordinates(dropoffInput);
             console.log(dropoffCoordinates,"drop");
-console.log(1);
+
             map.flyTo({
                 center: pickupCoordinates,
                 essential: true 
             });
-console.log(2);
+
             if (passengerMarker) {
                 passengerMarker.remove();
             }
-console.log(3);
             passengerMarker = createMarker(pickupCoordinates, "Pickup Location");
 console.log(4);
             createMarker(dropoffCoordinates, "Dropoff Location");
@@ -224,18 +226,7 @@ console.log(5);
 console.log(6);
         });
 
-        async function getCoordinates(location) {
-            console.log(location);
-            console.log(encodeURIComponent(location,"encode uri"));
-            const response = await fetch(`https://api.tomtom.com/search/2/search/${encodeURIComponent(location)}.json?key=${apiKey}`);
-            const data = await response.json();
-            if (data.results && data.results.length > 0) {
-                return data.results[0].position;
-            } else {
-                alert('Location not found');
-                throw new Error('Location not found');
-            }
-        }
+
 
     async function calculateRoute(pickupCoordinates, dropoffCoordinates) {
 
@@ -274,7 +265,7 @@ map.addLayer({
                 data: geojson
             },
             paint: {
-                'line-color': 'red',
+                'line-color': 'black',
                 'line-width': 4
             }
         });
@@ -286,6 +277,19 @@ map.addLayer({
             alert('Error fetching or parsing route data. Please try again.');
         }
 }
+async function getCoordinates(location) {
+            console.log(location);
+            console.log(encodeURIComponent(location,"encode uri"));
+            const response = await fetch(`https://api.tomtom.com/search/2/search/${encodeURIComponent(location)}.json?key=${apiKey}`);
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+                return data.results[0].position;
+            } else {
+                alert('Location not found');
+                throw new Error('Location not found');
+            }
+        }
+       
         
     </script>
 </body>

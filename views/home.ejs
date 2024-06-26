@@ -4,52 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UBER</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<!-- <body style="background-color:white;"> -->
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
         }
-        body {
-            margin: 0;
+        /* body {
             font-family: Arial, Helvetica, sans-serif;
-        }
+        } */
         .topnav {
             overflow: hidden;
             background-color: black;
             margin-inline: 22px;
             margin-top: 2px;
         }
-        .topnav a {
+         .topnav a {
             float: left;
             color: silver;
             text-align: center;
             padding: 14px 16px;
             text-decoration: none;
             font-size: 17px;
-            
-        }
-        /* .topnav a:hover {
-            /* background-color: silver;  */
-            /* color: black; */
-    
-        .topnav a.active {
+        } 
+         .topnav a.active {
             background-color: black;
             color: silver;
-        }
+        } 
         nav {
             display: flex;
             justify-content: space-around;
             background-color: black;
             color: silver;
         }
-        nav .right {
-            display: flex;
-        }
-        nav .left {
+        nav .right, nav .left {
             display: flex;
         }
         .left img {
@@ -60,53 +48,35 @@
             margin-inline: 22px;
             margin-top: 21px;
         }
-        .right a {
+        .right a, .right i, .right button {
             margin-inline: 22px;
             margin-top: 21px;
         }
-        .right i {
-            margin-top: 22px;
-            font-size: 22px;
-        }
-        .right button {
+         .right button {
             width: 100px;
             height: 36px;
-            background-color: #fff;
+            background-color:silver;
             color: black;
             font-weight: 600;
             border: none;
             border-radius: 22px;
-            margin-top: 21px;
-        }
+        } 
         .right button:hover {
-            background-attachment: transparent;
-            color: white;
-            border: 2px solid white;
+            background-color: transparent;
+            color: silver;
+            border: 2px solid silver;
         }
         .card {
             background-image: url(https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_1098,h_618/v1613521717/assets/7a/fd8982-6884-49b9-bb5f-28e6ff2cc0e8/original/Rider_Home_bg_tablet.png);
             background-repeat: no-repeat;
-            background-size: 1600px;
+            background-size: cover;
             height: 600px;
             padding: 3%;
-        }
-        .main {
-            width: 400px;
-            height: 400px;
-            margin-left: 44px;
-            background-color: #fff;
-        }
-        .main .icon {
             display: flex;
             justify-content: center;
-            border-bottom: 1px solid rgb(224,223,223);
+            align-items: center;
         }
-        .main .icon .car {
-            margin-inline: 70px;
-            margin-top: 20px;
-            border-bottom: 3px solid black;
-        }
-        .container {
+        .main {
             background-color: silver;
             position: relative;
             border-radius: 10px;
@@ -114,28 +84,53 @@
             padding: 20px 0 30px 0;
             top: 15%;
             width: 30%;
-            margin: 150px auto;
+            margin: 20px;
             margin-top: 1px;
             text-align: center;
         }
-        .container .icon {
+        .container {
+            padding: 20px;
+        }
+        .form-container {
+            display: none;
+        }
+        .form-container.active {
+            display: block;
+        }
+        .navigation {
+            display: flex;
+            justify-content: center;
             margin-bottom: 20px;
         }
-        .container .icon .car {
-            display: inline-block;
-            margin-top: 40px;
+        .navigation i {
+            margin: 0 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: black;
         }
-        .container .icon .car i {
-            font-size: 30px;
+        .navigation i:hover {
+            color:black;
+        }
+        .fr {
+            margin: 5px;
+            padding: 10px 20px;
+            background-color:black;
+            color: silver;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .fr:hover {
+            background-color:black;
         }
         .card h1 {
-            padding: 33px;
             font-size: 33px;
+            text-align: center;
         }
         .card input {
             width: 330px;
             height: 30px;
-            background-color: rgb(235,232,232);
+            background-color:silver(235, 232, 232);
             padding: 8px;
             margin-top: 4px;
             border: none;
@@ -145,27 +140,17 @@
             margin-left: 33px;
             margin-top: 44px;
         }
-        .card .btn .fr {
+        .card .btn .fr, .card .btn button {
             width: 140px;
             height: 36px;
             background-color: black;
-            color: white;
+            color: silver;
             border: none;
             border-radius: 4px;
             margin-inline: 10px;
         }
         .card .btn button {
-            width: 140px;
-            height: 36px;
-            background-color: rgb(190,188,188);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            margin-inline: 10px;
-        }
-        .head h1 {
-            padding: 33px;
-            font-size: 43px;
+            background-color:silver(190, 188, 188);
         }
         .ride .uber {
             display: flex;
@@ -179,116 +164,48 @@
             margin-inline: 33px;
             width: 43px;
         }
-        ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color:black;
-}
-
-li {
-  float: left;
-}
-
-li a {
-  display: block;
-  color: silver;
-  text-align: left;
-  padding: 18px 20px;
-  text-decoration: none;
-}
-
-li a:hover:not(.active) {
-  background-color: #111;
-}
-
-.active {
-  background-color: silver;
-}
-.dropbtn {
-  background-color: black;
-  color: silver;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {background-color: #f1f1f1}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-.dropdown:hover .dropbtn {
-  background-color: black;
-}
     </style>
 </head>
-<body style="background-color:white;">
+<body>
     <nav>
-     <div class="left"> 
-            
-            <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_84,h_84/v1618459257/assets/13/6bfdbd-cdb6-4221-92c1-cab1feaa39f3/original/Rider-App-logo.png" >
-     </div>
-            <!-- <p>Company</p>
-            <p>Safety</p>
-            <p>Help</p> -->
-            <ul>
-           
-                <li><a href="#company">Company</a></li>
-                <li><a href="#safety">Safety</a></li>
-                <li><a href="#help">Help</a></li>
-                
-              </ul>
+        <div class="left"> 
+            <img src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_84,h_84/v1618459257/assets/13/6bfdbd-cdb6-4221-92c1-cab1feaa39f3/original/Rider-App-logo.png">
         </div>
+        
         <div class="topnav">
             <a href="#">EN</a>
             <a href="#">Products</a>
             <a href="/login">Login</a>
             <a href="/signuppage">Sign-up</a>
-            
-
-    </div>
+        </div>
     </nav>
     <div class="card">
-        <div class="container">
-            <div class="icon">
-                <div class="car">
-                    <i class="fa fa-car"></i>
-                    <p>Rider</p>
+        <div class="main">
+            <div class="navigation">
+                <i id="slideForm1" class="fas fa-car" onclick="showForm('form1')"></i>
+                <i id="slideForm2" class="fas fa-map-marker-alt" onclick="showForm('form2')"></i>
+            </div>
+            <div class="container form-container active" id="form1">
+                <h1>Request a ride now</h1><br>
+                <input type="text" placeholder="Enter the pickup location"><br><br>
+                <input type="text" placeholder="Enter Destination">
+                <div class="btn"><a href="location">
+                    <button class="fr" type="submit">Request Now</button></a>
+                    <a href="location"> <button class="fr" type="submit">See Prices</button></a>
                 </div>
             </div>
-            <h1>Request a ride now</h1>
-            <input type="text" placeholder="Enter the pickup location"><br><br>
-            <input type="text" placeholder="Enter Destination">
-            <div class="btn">
-                <button class="fr" type="submit">Request Now</button>
-                <button class="fr" type="submit">Schedule for later</button>
+            <div class="container form-container" id="form2">
+                <h1>Drive when you want...</h1><br>
+                <input type="text" placeholder="Enter the current location"><br><br>
+                <div class="btn">
+                    <a href="driverlocation"><button class="fr" type="submit">Get Started</button></a>
+                   <a href="driverreg"> <button class="fr" type="submit">Register</button></a>
+                </div>
             </div>
         </div>
+    </div>
+
+
         <div class="head">
             <center>
                 <h1>Ride with Uber</h1>
@@ -334,5 +251,18 @@ li a:hover:not(.active) {
             </div>
         </div>
     </div>
+
+<script>
+    function showForm(formId) {
+        const form1 = document.getElementById('form1');
+        const form2 = document.getElementById('form2');
+        form1.classList.remove('active');
+        form2.classList.remove('active');
+        document.getElementById(formId).classList.add('active');
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        showForm('form1');
+    });
+</script>
 </body>
 </html>
