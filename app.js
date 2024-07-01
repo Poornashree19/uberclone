@@ -213,16 +213,16 @@ app.post('/location', async (req, res) => {
             //     coordinates: [lngRange,latRange]
             // }
             // console.log(findDriver);
-const minLongitude = lon - 5;
-  const maxLongitude = lon + 5;
-  const minLatitude = lat - 5;
-  const maxLatitude = lat + 5;
+const minLongitude = lon - 1;
+  const maxLongitude = lon + 1;
+  const minLatitude = lat - 1;
+  const maxLatitude = lat + 1;
 
             findNearByDriver = await Driverlatlng.find({pickupCoordinates: {
                 $geoWithin: {
                   $box: [
-                    [minLongitude, minLatitude], // Bottom-left corner
-                    [maxLongitude, maxLatitude]  // Top-right corner
+                    [minLongitude, minLatitude], 
+                    [maxLongitude, maxLatitude] 
                   ]
                 }
               }})
@@ -251,18 +251,7 @@ const minLongitude = lon - 5;
 });
 
 
-    //  crt = await Driverlatlng.find({ pickupCoordinates: passengerlatlng.pickupCoordinates})
-        // console.log(crt,"crt");
-
-
-        
-      
-        // if (crt.length === 0) {
-        //     throw { message: 'cannot find  the driver', type: 'match' }
-        // }
-        // else{
-            
-        //     res.render('location.ejs',{body:{},crt});
+    
            
 
 
