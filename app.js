@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const Passenger = require('./models/passenger.js');
 const Driver = require('./models/driver.js');
 const Driverlatlng=require('./models/driverlatlng.js');
+const Passengerlatlng=require('./models/passengerlatlng.js');
 const z = require('zod');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -70,7 +71,7 @@ app.post('/passengerreg', async (req, res) => {
 
         const { password, cpass } = req.body
 
-        const check = await Passenger.find({ phone: req.body.phone })
+        const check = await Passenger.find({ email: req.body.email })
 
         if (check.length > 0) { throw { message: 'user already exsists.', type: 'user_exsits' } }
 
@@ -109,7 +110,7 @@ app.post('/passengerreg', async (req, res) => {
         }
 
         if (error.type === 'user_exsits') {
-            errors.phone = error.message;
+            errors.email = error.message;
 
         }
 
@@ -126,15 +127,15 @@ app.get('/login', (req, res) => {
 
 app.post('/login', async (req, res) => {
     try {
-        const check = await Passenger.find({ phone: req.body.phone, password: req.body.password })
+        const check = await Passenger.find({ email: req.body.email, password: req.body.password })
 
         //  console.log({check});
 
         if (check.length === 0) {
-            throw { message: 'userphone and password mismatched', type: 'match' }
+            throw { message: 'useremail and password mismatched', type: 'match' }
         }
         else if (check == "") {
-            res.send("userphone or password is empty");
+            res.send("useremail or password is empty");
         }
 
 
@@ -159,7 +160,7 @@ app.post('/login', async (req, res) => {
             // res.send('Credentials not found');
         }
         if (err.type === 'match') {
-            errors.phone = err.message;
+            errors.email = err.message;
             errors.password = err.message
         }
         console.log(errors)
@@ -170,29 +171,101 @@ app.post('/login', async (req, res) => {
     }
 
 });
-app.get('/location', (req, res) => {
-    res.render('location.ejs', { body: {}, TOMTOM_API_KEY });
-});
-
+app.get('/location',(req,res)=>{
+    console.log("---->passenger location response");
+    res.render('location.ejs',{ body: {}, TOMTOM_API_KEY,findNearByDriver:"" });
+})
 app.post('/location', async (req, res) => {
-    console.log(11);
-    res.render('location.ejs', { body: req.body, TOMTOM_API_KEY: TOMTOM_API_KEY });
+    // console.log("Request received at /location");
+
     try {
-        console.log(11); 
-        console.log("req.body:", req.body);
-    
+        console.log("Request body:", req.body);
+
         const { lat, lon } = req.body;
+        
+        if (!lat || !lon) {
+            throw new Error("Latitude and longitude are required");
+        }
+
         const transform = {
-            address: "Some default address",  
+            address: "Some default address",
             pickupCoordinates: {
                 type: "Point",
                 coordinates: [lon, lat]
             }
         };
-    }catch(err){
-        console.log(err);
+
+        const passengerlatlng = await Passengerlatlng.create(transform);
+        console.log("Passengerlatlng saved successfully:", passengerlatlng);
+        let findNearByDriver = [];
+        if(passengerlatlng){
+            console.log("--> is passenger");
+            // const lngRange = { $gte: lon - 5, $lte: lon + 5 };
+            // const latRange = { $gte: lat - 5, $lte: lat + 5 };
+           
+            // //   const results = await Location.find({
+            // //     'coordinates.lat': latRange,
+            // //     'coordinates.lng': lngRange
+            // //   });
+
+            // const findDriver = {
+            //     type: "Point",
+            //     coordinates: [lngRange,latRange]
+            // }
+            // console.log(findDriver);
+const minLongitude = lon - 5;
+  const maxLongitude = lon + 5;
+  const minLatitude = lat - 5;
+  const maxLatitude = lat + 5;
+
+            findNearByDriver = await Driverlatlng.find({pickupCoordinates: {
+                $geoWithin: {
+                  $box: [
+                    [minLongitude, minLatitude], // Bottom-left corner
+                    [maxLongitude, maxLatitude]  // Top-right corner
+                  ]
+                }
+              }})
+            
+            // console.log(findNearByDriver,"-findNearByDriver");
+            findNearByDriver.map((ans)=> console.log(ans.pickupCoordinates.coordinates,"driver and passenger location."))
+            console.log(findNearByDriver,"-findNearByDriver");
+        
+        }
+
+        res.send(findNearByDriver)
+        // res.render('location.ejs', { body: transform, TOMTOM_API_KEY: TOMTOM_API_KEY,findNearByDriver: "hhjjk" });
+
+    } catch (err) {
+        console.error("Error processing request:", err);
+
+        let errors = {};
+        if (err.type === 'match') {
+            errors.pickupCoordinates = err.message;
+        } else {
+            errors.general = err.message;
+        }
+
+        res.render('login.ejs', { body: req.body, errors });
     }
 });
+
+
+    //  crt = await Driverlatlng.find({ pickupCoordinates: passengerlatlng.pickupCoordinates})
+        // console.log(crt,"crt");
+
+
+        
+      
+        // if (crt.length === 0) {
+        //     throw { message: 'cannot find  the driver', type: 'match' }
+        // }
+        // else{
+            
+        //     res.render('location.ejs',{body:{},crt});
+           
+
+
 
 
 
@@ -306,7 +379,7 @@ app.post('/driverreg', async (req, res) => {
         console.log(req.body,"req.body");
 
         const { password, cpass } = req.body
-        const check = await Passenger.find({ phone: req.body.phone })
+        const check = await Passenger.find({ email: req.body.email })
         if (check.length > 0) { throw { message: 'user already exsists.', type: 'user_exsits' } }
 
         console.log({ check });
@@ -337,7 +410,7 @@ res.redirect("/driverlogin")
             errors.cpass = error.message;
         }
         if (error.type === 'user_exsits') {
-            errors.phone = error.message;
+            errors.email= error.message;
         }
 
         console.log(error, errors)
@@ -354,14 +427,14 @@ app.post('/driverlogin', async (req, res) => {
     try {
         
 
-        const check = await Driver.find({ phone: req.body.phone, password: req.body.password })
+        const check = await Driver.find({ email: req.body.email, password: req.body.password })
 
 
         if (check.length === 0) {
-            throw { message: 'userphone and password mismatched', type: 'match' }
+            throw { message: 'useremail and password mismatched', type: 'match' }
         }
         else if (check == "") {
-            res.send("userphone or password is empty");
+            res.send("useremail or password is empty");
         }
 else{
         const token = jwt.sign({ id: Passenger._id }, 'yourSecretKey', { expiresIn: '24h' });
@@ -378,7 +451,7 @@ else{
 
         }
         if (err.type === 'match') {
-            errors.phone = err.message;
+            errors.email = err.message;
             errors.password = err.message
         }
         console.log(errors)
@@ -393,11 +466,11 @@ else{
 app.get('/driverlocation',(req,res)=>{
    
     res.render('driverlocation.ejs',{ body: {}, TOMTOM_API_KEY });
-  console.log(9090);
+  console.log("driver location response");
 })
 
 app.post('/driverlocation', async (req, res) => {
-    console.log(req,"clgs");
+    console.log(req.body,"clgs");
 
     try {
         console.log(11); 
@@ -412,14 +485,15 @@ app.post('/driverlocation', async (req, res) => {
             }
         };
     
-        res.render('driverlocation.ejs', { body: transformedBody, TOMTOM_API_KEY: TOMTOM_API_KEY });
-    
         const driverlatlng = await Driverlatlng.create(transformedBody);
         console.log("Driverlatlng saved successfully:", driverlatlng);
+
+        res.render('driverlocation.ejs', { body: transformedBody, TOMTOM_API_KEY: TOMTOM_API_KEY });
     
     } catch (error) {
         console.log(888);
         console.log(error);
+
     }
     
     
