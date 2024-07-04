@@ -6,172 +6,149 @@
     <title>Plan your journey</title>
     <link rel="stylesheet" href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/maps/maps.css">
     <style>
-        h1 {
-            color: black;
-            padding: 15px;
-            text-align: center;
-        }
+        /* @media only screen and (max-width:768px){
+add your responsive web
+    /* } */
 
-        h2 {
-            color: white;
-            background-color: black;
-            padding: 15px;
-            text-align: center;
-        }
 
-        body {
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-        }
+   h1 {
+    color: black;
+    padding: 15px;
+    text-align: center;
+}
 
-        .topnav {
-            overflow: hidden;
-            background-color: black;
-            margin-inline: 22px;
-            margin-top: 2px;
-        }
+h2 {
+    color: white;
+    background-color: black;
+    padding: 15px;
+    text-align: center;
+}
 
-        .topnav a {
-            float: left;
-            color: silver;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-size: 17px;
-        }
+body {
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+}
 
-        .topnav a.active {
-            background-color: black;
-            color: silver;
-        }
+.topnav {
+    overflow: hidden;
+    background-color: black;
+    margin-inline: 22px;
+    margin-top: 2px;
+    position: fixed;
+    width: calc(100% - 44px);
+    height:  44px;
+    top: 0;
+    z-index: 1000;
+    border: 9px solid black;  
+}
 
-        nav {
-            display: flex;
-            justify-content: space-around;
-            background-color: black;
-            color: silver;
-        }
+.topnav a {
+    float: left;
+    color: silver;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
 
-        nav .right {
-            display: flex;
-        }
-
-        nav .left {
-            display: flex;
-        }
-
-        .left img {
+.topnav a.active {
+    background-color: black;
+    color: silver;
+}
+.left img {
             margin-top: -11px;
             width: 100%;
+            align-items: left;
         }
+    .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    margin-top: 70px;
+        
+    }
+    .container {
+        width: 300px;
+        padding: 20px 15px;
+        background-color: silver;
+        border-radius: 4px;
+        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+        margin: 20px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+    input {
+        height: 40px;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    input:focus {
+        border-color: black;
+        border-bottom-width: 2px;
+    }
+    button {
+        width: 100%;
+        background: none;
+        font-size: 18px;
+        font-weight: 500;
+        background-color: black;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+    .back-link {
+        display: block;
+        margin-top: 10px;
+        color: black;
+        text-decoration: none;
+        text-align: center;
+    }
+    #map {
+        height: 500px;
+        flex: 1;
+        margin: 20px;
+        
+    }
+    .result-box ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    .result-box li {
+        padding: 5px;
+        cursor: pointer;
+    }
+    .result-box li:hover {
+        background-color: #f0f0f0;
+    }
 
-        .left p {
-            margin-inline: 22px;
-            margin-top: 21px;
-        }
-
-        .right a {
-            margin-inline: 22px;
-            margin-top: 21px;
-        }
-
-        .content {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            padding: 20px;
-        }
-
-        .container {
-            width: 300px;
-            padding: 20px 15px;
-            background-color: silver;
-            border-radius: 4px;
-            box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
-            margin: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input {
-            height: 40px;
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        input:focus {
-            border-color: blue;
-            border-bottom-width: 2px;
-        }
-
-        button {
-            width: 100%;
-            background: none;
-            font-size: 18px;
-            font-weight: 500;
-            background-color: black;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            cursor: pointer;
-            box-sizing: border-box;
-        }
-
-        .back-link {
-            display: block;
-            margin-top: 10px;
-            color: black;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        #map {
-            height: 500px;
-            flex: 1;
-            margin: 20px;
-
-        }
-
-        .result-box ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .result-box li {
-            padding: 5px;
-            cursor: pointer;
-        }
-
-        .result-box li:hover {
-            background-color: #f0f0f0;
-        }
     </style>
 </head>
 
 <body>
 
     <div action="/driverLocation">
-        <div class="nav">
-            <img
-                src="https://www.uber-assets.com/image/upload/f_auto,q_auto:eco,c_fill,w_84,h_84/v1618459257/assets/13/6bfdbd-cdb6-4221-92c1-cab1feaa39f3/original/Rider-App-logo.png">
+        <div class="topnav">
+            <a href="/">BACK</a>
         </div>
-        <div class="left"></div>
-
-        </nav>
+    </div>
+  
+  
+  </nav>
 
         <div class="content">
             <div class="container">
