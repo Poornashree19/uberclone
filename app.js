@@ -1,13 +1,13 @@
 require('dotenv').config()
 
-// const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const express = require('express');
 const mongoose = require('mongoose');
 const Passenger = require('./models/passenger.js');
-const Driver = require('./models/driver.js');
-const Driverlatlng=require('./models/driverlatlng.js');
-const Passengerlatlng=require('./models/passengerlatlng.js');
+const Drivers = require('./models/driver.js');
+const Driverlatlng = require('./models/driverlatlng.js');
+const Passengerlatlng = require('./models/passengerlatlng.js');
 const z = require('zod');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -24,7 +24,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 const TOMTOM_API_KEY = process.env.TOMTOM_API_KEY;
-// const Gemini_API_KEY= new GoogleGenerativeAI(process.env.Gemini_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.Gemini_API_KEY);
+
+// const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
 
 
 
@@ -49,7 +51,9 @@ const PassengerSchema = z.object({
 });
 
 
-
+app.get('/products', (req, res) => {
+    res.render('products.ejs')
+});
 
 
 
@@ -140,14 +144,14 @@ app.post('/login', async (req, res) => {
 
 
         else {
-             
+
             console.log(6666);
             const token = jwt.sign({ id: Passenger._id }, 'yourSecretKey', { expiresIn: '24h' });
             // console.log(token);
             res.cookie('authToken', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
             // console.log('Set-Cookie: ', res.getHeader('Set-Cookie'));
             // res.send('Login successful and cookie has been set');
-             res.render('location.ejs', { body: {}, TOMTOM_API_KEY: TOMTOM_API_KEY });
+            res.render('riderlocation.ejs', { body: {}, TOMTOM_API_KEY: TOMTOM_API_KEY });
 
         }
     }
@@ -171,18 +175,18 @@ app.post('/login', async (req, res) => {
     }
 
 });
-app.get('/location',(req,res)=>{
+app.get('/riderlocation', (req, res) => {
     console.log("---->passenger location response");
-    res.render('location.ejs',{ body: {}, TOMTOM_API_KEY,findNearByDriver:"" });
+    res.render('riderlocation.ejs', { body: {}, TOMTOM_API_KEY, findNearByDriver: "", getCartype: " " });
 })
-app.post('/location', async (req, res) => {
+app.post('/riderlocation', async (req, res) => {
     // console.log("Request received at /location");
 
     try {
         console.log("Request body:", req.body);
 
         const { lat, lon } = req.body;
-        
+
         if (!lat || !lon) {
             throw new Error("Latitude and longitude are required");
         }
@@ -194,48 +198,28 @@ app.post('/location', async (req, res) => {
                 coordinates: [lon, lat]
             }
         };
-
+        let cartype = [];
         const passengerlatlng = await Passengerlatlng.create(transform);
         console.log("Passengerlatlng saved successfully:", passengerlatlng);
+
+
         let findNearByDriver = [];
-        if(passengerlatlng){
+        if (passengerlatlng) {
             console.log("--> is passenger");
-            // const lngRange = { $gte: lon - 5, $lte: lon + 5 };
-            // const latRange = { $gte: lat - 5, $lte: lat + 5 };
-           
-            // //   const results = await Location.find({
-            // //     'coordinates.lat': latRange,
-            // //     'coordinates.lng': lngRange
-            // //   });
 
-            // const findDriver = {
-            //     type: "Point",
-            //     coordinates: [lngRange,latRange]
-            // }
-            // console.log(findDriver);
-const minLongitude = lon - 1;
-  const maxLongitude = lon + 1;
-  const minLatitude = lat - 1;
-  const maxLatitude = lat + 1;
 
-            findNearByDriver = await Driverlatlng.find({pickupCoordinates: {
-                $geoWithin: {
-                  $box: [
-                    [minLongitude, minLatitude], 
-                    [maxLongitude, maxLatitude] 
-                  ]
-                }
-              }})
-            
+            console.log(lat,lon,"--------------------------------------------------------------");
+            findNearByDriver = await findNearByDriverHelper(lat,lon);
+
             // console.log(findNearByDriver,"-findNearByDriver");
-            findNearByDriver.map((ans)=> console.log(ans.pickupCoordinates.coordinates,"driver and passenger location."))
-            console.log(findNearByDriver,"-findNearByDriver");
-        
+            findNearByDriver.map((ans) => console.log(ans.pickupCoordinates.coordinates, "driver and passenger location."))
+            console.log(findNearByDriver, "-findNearByDriver");
+
         }
-
+    
+       
+        // res.render('location.ejs', { body: transform, TOMTOM_API_KEY: TOMTOM_API_KEY,findNearByDriver});
         res.send(findNearByDriver)
-        // res.render('location.ejs', { body: transform, TOMTOM_API_KEY: TOMTOM_API_KEY,findNearByDriver: "hhjjk" });
-
     } catch (err) {
         console.error("Error processing request:", err);
 
@@ -250,32 +234,111 @@ const minLongitude = lon - 1;
     }
 });
 
+async function findNearByDriverHelper(lat,lon) {
+    try {
 
+        if(!lat || !lon) throw new Error ("unable to get nearby driver detail.") 
+
+        let findNearByDriver = [];
+        const minLongitude = lon - 0.5;
+        const maxLongitude = lon + 0.5;
+        const minLatitude = lat - 0.5;
+        const maxLatitude = lat + 0.5;
+       
+        findNearByDriver = await Driverlatlng.find({
+            pickupCoordinates: {
+                $geoWithin: {
+                    $box: [
+                        [minLongitude, minLatitude],
+                        [maxLongitude, maxLatitude]
+                    ]
+                }
+            }
+        })
     
-           
+        return findNearByDriver
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+setInterval(()=>{
+    console.log('hlooo');
+},10000);
+
+
+
+  // const lngRange = { $gte: lon - 5, $lte: lon + 5 };
+            // const latRange = { $gte: lat - 5, $lte: lat + 5 };
+
+            // //   const results = await Location.find({
+            // //     'coordinates.lat': latRange,
+            // //     'coordinates.lng': lngRange
+            // //   });
+
+            // const findDriver = {
+            //     type: "Point",
+            //     coordinates: [lngRange,latRange]
+            // }
+            // console.log(findDriver);
+
+
+            // const minLongitude = lon - 0.5;
+            // const maxLongitude = lon + 0.5;
+            // const minLatitude = lat - 0.5;
+            // const maxLatitude = lat + 0.5;
+
+
+            // findNearByDriver = await Driverlatlng.find({
+            //     pickupCoordinates: {
+            //         $geoWithin: {
+            //             $box: [
+            //                 [minLongitude, minLatitude],
+            //                 [maxLongitude, maxLatitude]
+            //             ]
+            //         }
+            //     }
+            // })
 
 
 
 
 
-// app.get('/chatbot',(req,res)=>{
-//     res.render('chatbot.ejs');
-// })
 
-// app.post('/chatbot', async (req, res) => {
-//   try {
-//     const { prompt } = req.body;
-//     const model = Gemini_API_KEY.getGenerativeModel({ model: 'gemini-1.5-flash' });
-//     const result = await model.generateContent(prompt);
-//     console.log(result);  
-    
-//     const text = result.contents[0]?.text || 'No content generated';
-//     res.json({ text });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.get('/chatbot', (req, res) => {
+    res.render('chatbot.ejs');
+})
+
+app.post('/chatbot', async (req, res) => {
+    try {
+        const { prompt } = req.body;
+
+        const model = getGenerativeModel({ apiKey: GEMINI_API_KEY, model: 'gemini-1.5-flash' });
+
+        const result = await model.generateContent(prompt);
+        const text = result.contents[0]?.text || 'No content generated';
+
+        res.json({ text });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 
@@ -344,13 +407,14 @@ const DriverSchema = z.object({
         .string({ required_error: "email should not be empty" })
         .trim()
         .email(),
-    dob: z.string().date(),
     password: z.string().min(6).max(6),
     cpass: z.string().min(6),
     license: z.string().length(8),
     image: z.string(),
     exp: z.string().min(1).max(2),
-    phone: z.string().length(10)
+    phone: z.string().length(10),
+    cartype: z.string().min(5)
+
 });
 
 
@@ -365,7 +429,7 @@ app.get('/driverreg', (req, res) => {
 app.post('/driverreg', async (req, res) => {
     try {
 
-        console.log(req.body,"req.body");
+        console.log(req.body, "req.body");
 
         const { password, cpass } = req.body
         const check = await Passenger.find({ email: req.body.email })
@@ -373,13 +437,13 @@ app.post('/driverreg', async (req, res) => {
 
         console.log({ check });
         if (password !== cpass) throw { message: 'Password and confirm password must me equal.', type: 'pass_miss_match' }
-        
+
         const isValidData = DriverSchema.parse(req.body);
-        
+
         const driver = await Driver.create(req.body);
 
-     
-res.redirect("/driverlogin")
+
+        res.redirect("/driverlogin")
 
     } catch (error) {
 
@@ -399,22 +463,22 @@ res.redirect("/driverlogin")
             errors.cpass = error.message;
         }
         if (error.type === 'user_exsits') {
-            errors.email= error.message;
+            errors.email = error.message;
         }
 
         console.log(error, errors)
-        res.render('driverreg.ejs',{ body: req.body, errors })
+        res.render('driverreg.ejs', { body: req.body, errors })
 
     }
 });
 
-app.get('/driverlogin',(req,res)=>{
-    res.render('driverlogin.ejs',  { body: {}, errors: {} });
+app.get('/driverlogin', (req, res) => {
+    res.render('driverlogin.ejs', { body: {}, errors: {} });
 });
 
 app.post('/driverlogin', async (req, res) => {
     try {
-        
+
 
         const check = await Driver.find({ email: req.body.email, password: req.body.password })
 
@@ -425,14 +489,14 @@ app.post('/driverlogin', async (req, res) => {
         else if (check == "") {
             res.send("useremail or password is empty");
         }
-else{
-        const token = jwt.sign({ id: Passenger._id }, 'yourSecretKey', { expiresIn: '24h' });
-        res.cookie('authToken', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
-        res.redirect('/driverlocation');
-}
- }
+        else {
+            const token = jwt.sign({ id: Passenger._id }, 'yourSecretKey', { expiresIn: '24h' });
+            res.cookie('authToken', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
+            res.redirect('/driverlocation');
+        }
+    }
     catch (err) {
- 
+
         console.log(req.body);
         let errors = {}
         {
@@ -452,41 +516,41 @@ else{
     }
 
 });
-app.get('/driverlocation',(req,res)=>{
-   
-    res.render('driverlocation.ejs',{ body: {}, TOMTOM_API_KEY });
-  console.log("driver location response");
+app.get('/driverlocation', (req, res) => {
+
+    res.render('driverlocation.ejs', { body: {}, TOMTOM_API_KEY });
+    console.log("driver location response");
 })
 
 app.post('/driverlocation', async (req, res) => {
-    console.log(req.body,"clgs");
+    console.log(req.body, "clgs");
 
     try {
-        console.log(11); 
+        console.log(11);
         console.log("req.body:", req.body);
-    
+
         const { lat, lon } = req.body;
         const transformedBody = {
-            address: "Some default address",  
+            address: "Some default address",
             pickupCoordinates: {
                 type: "Point",
                 coordinates: [lon, lat]
             }
         };
-    
+
         const driverlatlng = await Driverlatlng.create(transformedBody);
         console.log("Driverlatlng saved successfully:", driverlatlng);
 
         res.render('driverlocation.ejs', { body: transformedBody, TOMTOM_API_KEY: TOMTOM_API_KEY });
-    
+
     } catch (error) {
         console.log(888);
         console.log(error);
 
     }
-    
-    
-    
+
+
+
 });
 
 
@@ -495,12 +559,12 @@ app.post('/driverlocation', async (req, res) => {
 mongoose.connect(process.env.MONGO_DB_URL)
     .then(() => {
 
-        const PORT =process?.env?.PORT ?? 8080;
+        const PORT = process?.env?.PORT ?? 8080;
 
         console.log("connected to db");
 
         app.listen(PORT, () => {
-            console.log("server is running on port : ",PORT );
+            console.log("server is running on port : ", PORT);
         });
     })
     .catch((err) => {
