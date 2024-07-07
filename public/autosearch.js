@@ -6110,8 +6110,6 @@ const pickupInput = document.getElementById('pickupInput');
 const dropoffInput = document.getElementById('dropoffInput');
 const pickupResultBox = document.getElementById('pickupResultBox');
 const dropoffResultBox = document.getElementById('dropoffResultBox');
-
-
 pickupInput.onkeyup = function() {
     let result = [];
     let input = pickupInput.value;
