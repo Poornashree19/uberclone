@@ -2,12 +2,14 @@ require('dotenv').config()
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
+const WebSocket = require('ws');
 const express = require('express');
 const mongoose = require('mongoose');
 const Passenger = require('./models/passenger.js');
 const Drivers = require('./models/driver.js');
 const Driverlatlng = require('./models/driverlatlng.js');
 const Passengerlatlng = require('./models/passengerlatlng.js');
+const PassengerStatus = require('./models/PassengerStatus.js');
 const z = require('zod');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -15,9 +17,10 @@ const cookieParser = require('cookie-parser');
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const axios = require('axios');
+const { Socket } = require('dgram');
 
 
-
+const PORT = 3000;
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -177,10 +180,10 @@ app.post('/login', async (req, res) => {
 });
 app.get('/riderlocation', (req, res) => {
     console.log("---->passenger location response");
-    res.render('riderlocation.ejs', { body: {}, TOMTOM_API_KEY, findNearByDriver: "", getCartype: " " });
+    res.render('riderlocation.ejs', { body: {}, TOMTOM_API_KEY, findNearByDriver: "", cartypes: "" });
 })
 app.post('/riderlocation', async (req, res) => {
-    // console.log("Request received at /location");
+    // console.log("Request received at /rider");
 
     try {
         console.log("Request body:", req.body);
@@ -198,7 +201,6 @@ app.post('/riderlocation', async (req, res) => {
                 coordinates: [lon, lat]
             }
         };
-        let cartype = [];
         const passengerlatlng = await Passengerlatlng.create(transform);
         console.log("Passengerlatlng saved successfully:", passengerlatlng);
 
@@ -208,18 +210,20 @@ app.post('/riderlocation', async (req, res) => {
             console.log("--> is passenger");
 
 
-            console.log(lat,lon,"--------------------------------------------------------------");
-            findNearByDriver = await findNearByDriverHelper(lat,lon);
+            console.log(lat, lon, "--------------------------------------------------------------");
+            findNearByDriver = await findNearByDriverHelper(lat, lon);
 
             // console.log(findNearByDriver,"-findNearByDriver");
             findNearByDriver.map((ans) => console.log(ans.pickupCoordinates.coordinates, "driver and passenger location."))
             console.log(findNearByDriver, "-findNearByDriver");
 
         }
-    
-       
+
+
         // res.render('location.ejs', { body: transform, TOMTOM_API_KEY: TOMTOM_API_KEY,findNearByDriver});
-        res.send(findNearByDriver)
+        let cartype = await getCartypes();
+        console.log(cartype, "<><><><><><><><><><><><><>");
+        res.send({ findNearByDriver, cartype });
     } catch (err) {
         console.error("Error processing request:", err);
 
@@ -234,17 +238,17 @@ app.post('/riderlocation', async (req, res) => {
     }
 });
 
-async function findNearByDriverHelper(lat,lon) {
+async function findNearByDriverHelper(lat, lon) {
     try {
 
-        if(!lat || !lon) throw new Error ("unable to get nearby driver detail.") 
+        if (!lat || !lon) throw new Error("unable to get nearby driver detail.")
 
         let findNearByDriver = [];
         const minLongitude = lon - 0.5;
         const maxLongitude = lon + 0.5;
         const minLatitude = lat - 0.5;
         const maxLatitude = lat + 0.5;
-       
+
         findNearByDriver = await Driverlatlng.find({
             pickupCoordinates: {
                 $geoWithin: {
@@ -255,7 +259,7 @@ async function findNearByDriverHelper(lat,lon) {
                 }
             }
         })
-    
+
         return findNearByDriver
 
     } catch (error) {
@@ -263,44 +267,99 @@ async function findNearByDriverHelper(lat,lon) {
     }
 }
 
-
-setInterval(()=>{
-    console.log('hlooo');
-},10000);
-
-
-
-  // const lngRange = { $gte: lon - 5, $lte: lon + 5 };
-            // const latRange = { $gte: lat - 5, $lte: lat + 5 };
-
-            // //   const results = await Location.find({
-            // //     'coordinates.lat': latRange,
-            // //     'coordinates.lng': lngRange
-            // //   });
-
-            // const findDriver = {
-            //     type: "Point",
-            //     coordinates: [lngRange,latRange]
-            // }
-            // console.log(findDriver);
+const getCartypes = async () => {
+    console.log("1cartypes");
+    try {
+        let query = {};
+        let projection = { cartype: 1, _id: 0 };
+        const cartypes = await Drivers.find(query, projection);
+        console.log("2.cartypes");
+        console.log(cartypes);
+        return cartypes;
+    } catch (error) {
+        console.error("Error fetching cartypes:", error.message);
+    }
+};
 
 
-            // const minLongitude = lon - 0.5;
-            // const maxLongitude = lon + 0.5;
-            // const minLatitude = lat - 0.5;
-            // const maxLatitude = lat + 0.5;
+
+app.post('/PassengerStatus', async (req, res) => {
+    // const status=req.body.Status;
+    // console.log(status);
+    console.log("sdfgvbn");
 
 
-            // findNearByDriver = await Driverlatlng.find({
-            //     pickupCoordinates: {
-            //         $geoWithin: {
-            //             $box: [
-            //                 [minLongitude, minLatitude],
-            //                 [maxLongitude, maxLatitude]
-            //             ]
-            //         }
-            //     }
-            // })
+
+    res.status(200).send({ message: 'Status updated' });
+});
+
+const wss = new WebSocket.Server({ port: 5000 });
+
+wss.on('connection', ws => {
+    console.log('WebSocket client connected');
+
+    ws.on('message', async (message) => {
+        try {
+            console.log(`received: ${message}`);
+            ws.send(`server: ${message}`);
+
+        } catch (error) {
+            console.log("socket error:",error);
+        }
+    });
+
+    ws.on('close', () => {
+        console.log('WebSocket client disconnected');
+    });
+
+    ws.send(`welcome to the web socket!!!!!!!!`)
+});
+
+
+
+// async function broadcastStatusChange() {
+//     console.log("11111111111111111111111111111111111111111111111111");
+//     wss.clients.forEach(client => {
+//         if (client.readyState === WebSocket.OPEN) {
+//             client.send(JSON.stringify({ type: 'waiting', status: "waiting for driver" }));
+//         }
+//     });
+// }
+
+
+
+
+// const lngRange = { $gte: lon - 5, $lte: lon + 5 };
+// const latRange = { $gte: lat - 5, $lte: lat + 5 };
+
+// //   const results = await Location.find({
+// //     'coordinates.lat': latRange,
+// //     'coordinates.lng': lngRange
+// //   });
+
+// const findDriver = {
+//     type: "Point",
+//     coordinates: [lngRange,latRange]
+// }
+// console.log(findDriver);
+
+
+// const minLongitude = lon - 0.5;
+// const maxLongitude = lon + 0.5;
+// const minLatitude = lat - 0.5;
+// const maxLatitude = lat + 0.5;
+
+
+// findNearByDriver = await Driverlatlng.find({
+//     pickupCoordinates: {
+//         $geoWithin: {
+//             $box: [
+//                 [minLongitude, minLatitude],
+//                 [maxLongitude, maxLatitude]
+//             ]
+//         }
+//     }
+// })
 
 
 

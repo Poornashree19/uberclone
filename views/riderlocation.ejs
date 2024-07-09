@@ -189,6 +189,7 @@ body {
     <script src="/autosearch.js"></script>
     <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/maps/maps-web.min.js"></script>
     <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/services/services-web.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
             integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
             crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -373,7 +374,7 @@ body {
 
             const differenceInMilliseconds = time1 - time2;
             const differenceInMinutes = Math.ceil(differenceInMilliseconds / (1000 * 60));
-            console.log(differenceInMinutes,"))))))))))))");
+            console.log(differenceInMinutes,"differenceInMinutes");
             // timecost=time*timerate
             const timeCost=differenceInMinutes*2
             const base=20;
@@ -401,9 +402,30 @@ body {
         }
 
 
-        
+        async function socketFunction () {
+            const socket = new WebSocket('ws://localhost:5000');
+
+            socket.onopen = () => {
+                console.log("Connected to web socket..");
+            }
+
+            socket.onclose = () => {
+                console.log("Disconnected to web socket..");
+            }
+
+            socket.onerror = error => {
+                console.log("Websocket error",error)
+            }
+
+            const message = "waiting for driver";
+            socket.send(message);
+            console.log(`Send: ${message}`);
+        }
+
        async function closePopup() {
-        await axios.post('/PassengerStatus');
+        // await axios.post('/PassengerStatus');
+        
+            await socketFunction();
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('carPopup').style.display = 'none';
         }
