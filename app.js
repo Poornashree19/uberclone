@@ -282,7 +282,6 @@ const getCartypes = async () => {
 };
 
 
-
 app.post('/PassengerStatus', async (req, res) => {
     // const status=req.body.Status;
     // console.log(status);
