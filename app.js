@@ -282,7 +282,7 @@ const getCartypes = async () => {
 };
 
 
-app.post('/PassengerStatus', async (req, res) => {
+app.post('/passenger', async (req, res) => {
     // const status=req.body.Status;
     // console.log(status);
     console.log("sdfgvbn");
