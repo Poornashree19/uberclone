@@ -9,7 +9,6 @@ const Passenger = require('./models/passenger.js');
 const Drivers = require('./models/driver.js');
 const Driverlatlng = require('./models/driverlatlng.js');
 const Passengerlatlng = require('./models/passengerlatlng.js');
-const PassengerStatus = require('./models/PassengerStatus.js');
 const z = require('zod');
 const path = require('path');
 const bodyParser = require('body-parser');
