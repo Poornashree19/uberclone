@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,175 +8,193 @@
     <link rel="stylesheet" href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/maps/maps.css">
     <style>
         h1 {
-    color: black;
-    padding: 15px;
-    text-align: center;
-}
+            color: black;
+            padding: 15px;
+            text-align: center;
+        }
 
-h2 {
-    color: white;
-    background-color: black;
-    padding: 15px;
-    text-align: center;
-}
+        h2 {
+            color: white;
+            background-color: black;
+            padding: 15px;
+            text-align: center;
+        }
 
-body {
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-}
+        body {
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
 
-.topnav {
-    overflow: hidden;
-    background-color: black;
-    margin-inline: 22px;
-    margin-top: 2px;
-    position: fixed;
-    width: 100%;
-    height:  44px;
-    top: 0;
-    z-index: 1000;
-    border: 9px solid black;  
-}
+        .topnav {
+            overflow: hidden;
+            background-color: black;
+            margin-inline: 22px;
+            margin-top: 2px;
+            position: fixed;
+            width: 100%;
+            height: 44px;
+            top: 0;
+            z-index: 1000;
+            border: 9px solid black;
+        }
 
-.topnav a {
-    float: left;
-    color: silver;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 17px;
-}
+        .topnav a {
+            float: left;
+            color: silver;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
 
-.topnav a.active {
-    background-color: black;
-    color: silver;
-}
-    .content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 20px;
-    margin-top: 70px;
-        
-    }
-    .container {
-    
-        width: 300px;
-        padding: 20px 15px;
-        background-color: silver;
-        border-radius: 4px;
-        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
-        margin: 20px;
-    }
-    .form-group {
-        margin-bottom: 20px;
-    }
-    label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 5px;
-    }
-    input {
-        height: 40px;
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-    }
-    input:focus {
-        border-color: black;
-        border-bottom-width: 2px;
-    }
-    button {
-        width: 100%;
-        background: none;
-        font-size: 18px;
-        font-weight: 500;
-        background-color: black;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 15px;
-        cursor: pointer;
-        box-sizing: border-box;
-    }
-    .back-link {
-        display: block;
-        margin-top: 10px;
-        color: black;
-        text-decoration: none;
-        text-align: center;
-    }
-    #map {
-        height: 500px;
-        flex: 1;
-        margin: 20px;
-        
-    }
-    .result-box ul {
-        list-style-type: none;
-        padding: 0;
-    }
-    .result-box li {
-        padding: 5px;
-        cursor: pointer;
-    }
-    .result-box li:hover {
-        background-color: #f0f0f0;
-    }
+        .topnav a.active {
+            background-color: black;
+            color: silver;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+            margin-top: 70px;
+
+        }
+
+        .container {
+
+            width: 300px;
+            padding: 20px 15px;
+            background-color: silver;
+            border-radius: 4px;
+            box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            height: 40px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: black;
+            border-bottom-width: 2px;
+        }
+
+        button {
+            width: 100%;
+            background: none;
+            font-size: 18px;
+            font-weight: 500;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 10px;
+            color: black;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        #map {
+            height: 500px;
+            flex: 1;
+            margin: 20px;
+
+        }
+
+        .result-box ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .result-box li {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .result-box li:hover {
+            background-color: #f0f0f0;
+        }
 
         #carPopup {
-        
+
             position: fixed;
             display: none;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            background-color:whitesmoke;
+            background-color: whitesmoke;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             z-index: 1000;
+            border-radius: 5%;
         }
+
         #overlay {
-        
+
             position: fixed;
             display: none;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 999;
         }
+
         #map {
             width: 100%;
             height: 500px;
         }
     </style>
-    </head>
-    <body>
-        <div action="/driverLocation">
-            <div class="topnav">
-                <a href="/">BACK</a>
-            </div>
+</head>
+
+<body>
+    <div action="/driverLocation">
+        <div class="topnav">
+            <a href="/">BACK</a>
         </div>
+    </div>
     <div class="content">
         <div class="container">
-            <form name="myform" id="routeForm" action="/riderlocation" method="post" >
+            <form name="myform" id="routeForm" action="/riderlocation" method="post">
                 <h2>Get a ride</h2>
                 <div class="form-group">
-                    <input type="text" placeholder="Pickup location" id="pickupInput" name="pickupCoordinates" required autocomplete="off" ><br><br>
- 
-                    <input type="text" placeholder="Dropoff location" id="dropoffInput" name="dropoff" required autocomplete="off"><br><br>
+                    <input type="text" placeholder="Pickup location" id="pickupInput" name="pickupCoordinates" required
+                        autocomplete="off"><br><br>
+
+                    <input type="text" placeholder="Dropoff location" id="dropoffInput" name="dropoff" required
+                        autocomplete="off"><br><br>
                     <button type="submit">Request for ride</button>
                     <div class="result-box" id="pickupResultBox"></div>
                     <div class="result-box" id="dropoffResultBox"></div>
                 </div>
             </form>
-         
+
         </div>
         <div id="map"></div>
         <div id="overlay"></div>
@@ -191,32 +210,44 @@ body {
     <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/services/services-web.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
-            integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
-            crossorigin="anonymous" referrerpolicy="no-referrer">
-    </script>
+        integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+        </script>
 
     <!-- <div id="map"></div> -->
 
     <script>
-        const apiKey = "<%=TOMTOM_API_KEY%>"  
-        // const cartypes="<%=cartypes%>"
-        // console.log({apiKey,cartypes});
-      
+        const apiKey = "<%=TOMTOM_API_KEY%>"
+   
+    const params = {};
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      urlParams.forEach((value, key) => {
+        params[key] = value;
+      });
+
+      const user_email = params?.mail;
+
+      if(user_email) {
+        localStorage.setItem("email",user_email);
+      }
+       console.log(user_email,"user_email");
+       console.log(apiKey,"apikey");
         const map = tt.map({
             key: apiKey,
             container: "map",
-            center: [77.2090, 28.6139], 
-            zoom:13 ,
+            center: [77.2090, 28.6139],
+            zoom: 13,
         });
 
         console.log(map);
-        let  passengerMarker, routeLayer;
+        let passengerMarker, routeLayer;
 
 
         function createMarker(coordinates, popupText) {
             console.log("createMarker");
             const element = document.createElement('div');
-            element.innerHTML=`<img src='data:image/jpeg; style='width: 30px; height: 30px; background-color:black'>`
+            element.innerHTML = `<img src='data:image/jpeg; style='width: 30px; height: 30px; background-color:black'>`
             const marker = new tt.Marker({ element: element }).setLngLat(coordinates);
             const popup = new tt.Popup({ offset: 30 }).setHTML(popupText);
             marker.setPopup(popup);
@@ -252,7 +283,7 @@ body {
             createMarker(dropoffCoordinates, "Dropoff Location");
             console.log(5);
             let calculateTravelDetails = await calculateRoute(pickupCoordinates, dropoffCoordinates);
-            await sendLocation(pickupCoordinates,calculateTravelDetails);
+            await sendLocation(pickupCoordinates, calculateTravelDetails);
             // calculateFare(lengthInMeters);
         });
 
@@ -265,23 +296,23 @@ body {
             }
 
             const apiUrl = `https://api.tomtom.com/routing/1/calculateRoute/${pickupCoordinates.lat},${pickupCoordinates.lon}:${dropoffCoordinates.lat},${dropoffCoordinates.lon}/json?key=${apiKey}`;
-            
+
             try {
 
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
                 pickupAndDropDetail = await data?.routes?.[0]?.summary;
-                console.log(pickupAndDropDetail?.lengthInMeters,"--------");
+                console.log(pickupAndDropDetail?.lengthInMeters, "--------");
                 distance = pickupAndDropDetail?.lengthInMeters;
-                kilometers=distance/1000;
+                kilometers = distance / 1000;
                 console.log(kilometers);
-                console.log(data?.routes?.[0]?.summary,"summary");
+                console.log(data?.routes?.[0]?.summary, "summary");
                 console.log('TomTom API Response:', data);
 
                 if (!data.routes || data.routes.length === 0 || !data.routes[0].legs || data.routes[0].legs.length === 0 || !data.routes[0].legs[0].points || data.routes[0].legs[0].points.length === 0) {
                     alert('Route not found');
-                    
+
                     throw new Error('Route not found');
                 }
 
@@ -323,9 +354,9 @@ body {
         async function getCoordinates(location) {
 
             console.log(encodeURIComponent(location, "encode uri"));
-            
+
             const response = await fetch(`https://api.tomtom.com/search/2/search/${encodeURIComponent(location)}.json?key=${apiKey}`);
-            
+
             const data = await response.json();
 
             if (data.results && data.results.length > 0) {
@@ -336,7 +367,7 @@ body {
             }
         }
 
-        async function sendLocation(pickupCoordinates,calculateTravelDetails) {
+        async function sendLocation(pickupCoordinates, calculateTravelDetails) {
             console.log(pickupCoordinates, "pickupcoordinates");
 
             try {
@@ -345,7 +376,7 @@ body {
 
                 console.log(response?.data, "gotNearByDriver's");
 
-                const {findNearByDriver,carTypes} = response?.data
+                const { findNearByDriver, carTypes } = response?.data
 
                 if (response?.data && response?.data?.findNearByDriver?.length > 0) {
                     response?.data?.findNearByDriver?.map(async (val) => {
@@ -353,7 +384,7 @@ body {
                         let longitude = val.pickupCoordinates.coordinates[0];
                         await setDefaultTaxiConfig([longitude, latitude]);
                     });
-                    await showPopup(response?.data?.cartype,calculateTravelDetails);
+                    await showPopup(response?.data?.cartype, calculateTravelDetails);
                 } else {
                     alert('No cars available at the moment.');
                 }
@@ -364,49 +395,51 @@ body {
         }
 
         async function calculateFare(calculateTravelDetails) {
-            console.log(calculateTravelDetails,"pirai anna");
+            console.log(calculateTravelDetails, "pirai anna");
 
             const arrivalTime = calculateTravelDetails?.arrivalTime;
             const depatureTime = calculateTravelDetails?.departureTime;
 
             const time1 = new Date(arrivalTime);
-            const time2=new Date(depatureTime);
+            const time2 = new Date(depatureTime);
 
             const differenceInMilliseconds = time1 - time2;
             const differenceInMinutes = Math.ceil(differenceInMilliseconds / (1000 * 60));
-            console.log(differenceInMinutes,"differenceInMinutes");
+            console.log(differenceInMinutes, "differenceInMinutes");
             // timecost=time*timerate
-            const timeCost=differenceInMinutes*2
-            const base=20;
-            const distance = Math.ceil((calculateTravelDetails?.lengthInMeters)/1000);
-            const distanceCost=distance*2;
-            const totalfare=base+distanceCost+timeCost;
+            const timeCost = differenceInMinutes * 2
+            const base = 20;
+            const distance = Math.ceil((calculateTravelDetails?.lengthInMeters) / 1000);
+            const distanceCost = distance * 2;
+            const totalfare = base + distanceCost + timeCost;
 
             console.log(distance);
-            return {totalfare,distance}
+            return { totalfare, distance }
         }
-       
-        async function showPopup(cars,calculateTravelDetails) {
 
-            const {totalfare,distance} = await calculateFare(calculateTravelDetails)
+        async function showPopup(cars, calculateTravelDetails) {
+
+            const { totalfare, distance } = await calculateFare(calculateTravelDetails)
 
             const carList = document.getElementById('carList');
-            carList.innerHTML = ''; 
-            cars?.map((carData)=> {
+            carList.innerHTML = '';
+            cars?.map((carData) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `Car Detail:${carData?.cartype}   Distance :${distance}kms   Rate:₹${totalfare} `;
-                carList.appendChild(listItem);   
+                carList.appendChild(listItem);
             })
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('carPopup').style.display = 'block';
         }
-
-
         async function socketFunction () {
+
             const socket = new WebSocket('ws://localhost:5000');
 
             socket.onopen = () => {
                 console.log("Connected to web socket..");
+                const message = JSON.stringify({ type: 'status', status: 'waiting for driver',email:user_email });
+            socket.send(message);
+            console.log(`Send: ${message}`);
             }
 
             socket.onclose = () => {
@@ -417,9 +450,7 @@ body {
                 console.log("Websocket error",error)
             }
 
-            const message = "waiting for driver";
-            socket.send(message);
-            console.log(`Send: ${message}`);
+           
         }
 
        async function closePopup() {
@@ -430,6 +461,13 @@ body {
             document.getElementById('carPopup').style.display = 'none';
         }
 
+
+      
+
+        window.onload = () => {
+            // Optionally connect to the WebSocket when the page loads
+            // socketFunction();
+        };
         function createMarker(coordinates, label) {
             const marker = new tt.Marker().setLngLat([coordinates.lon, coordinates.lat]).addTo(map);
             if (label) {
@@ -462,8 +500,9 @@ body {
                     .addTo(map);
             });
         }
-       
+
 
     </script>
 </body>
+
 </html>

@@ -37,7 +37,7 @@ body {
     margin-inline: 22px;
     margin-top: 2px;
     position: fixed;
-    width: calc(100% - 44px);
+    width: 100%;
     height:  44px;
     top: 0;
     z-index: 1000;
@@ -158,7 +158,7 @@ body {
                         <input type="text" placeholder="enter current location location" id="pickupInput"
                             name="pickupCoordinates" required autocomplete="off"><br><br>
 
-                        <button type="submit" id="submitButn">Submit</button>
+                        <button id="submitButn">Submit</button>
                         <div class="result-box" id="pickupResultBox"></div>
 
                     </div>
@@ -205,11 +205,14 @@ body {
 
                 event.preventDefault();
 
-                if (pickupInput && pickupCoordinates) return await sendLocation(pickupCoordinates)
-
+                if (pickupInput && pickupCoordinates) return 
+                
+                // await sendLocation(pickupCoordinates)
 
                 pickupCoordinates = await getCoordinates(pickupInput);
 
+                await sendLocation(pickupCoordinates)
+                
                 console.log(pickupCoordinates, "pickup");
 
                 console.log(123);
@@ -231,7 +234,7 @@ body {
             });
 
             async function getCoordinates(location) {
-                console.log(location);
+                console.log(location,"----");
                 console.log(encodeURIComponent(location, "encode uri"));
                 const response = await fetch(`https://api.tomtom.com/search/2/search/${encodeURIComponent(location)}.json?key=${apiKey}`);
                 const data = await response.json();
@@ -244,6 +247,7 @@ body {
             }
 
             async function sendLocation(pickupCoordinates) {
+                console.log(pickupCoordinates,"sendLocation");
 
                 const button = document.getElementById('submitButn');
 
@@ -253,7 +257,11 @@ body {
 
                 try {
 
-                    const response = (await axios.post('/driverlocation', pickupCoordinates, { withCredentials: true })).data
+                    const response = await axios.post('/driverlocation', pickupCoordinates, { withCredentials: true })
+
+                    let s = await driversocket();
+
+                    console.log(s,"sssssssssssssss");
 
                     console.log({ response });
                 } catch (err) {
@@ -263,8 +271,43 @@ body {
                 button.innerText = oldText
 
 
-                console.log({ pickupCoordinates });
+                console.log({ pickupCoordinates },"00000");
             }
+            console.log("develop");
+async function driversocket(){
+
+console.log("web");
+
+const socket = new WebSocket('ws://localhost:5000'); 
+
+socket.onopen = () => {
+    console.log('Connected to WebSocket server');
+};
+
+socket.onerror = (error) => {
+    console.error('WebSocket error:', error);
+};
+
+socket.onmessage = async(event) => {
+    // console.log(event,"cccccccccccc");
+    try {
+        const data = JSON.parse(event.data);
+
+        console.log("got rply",data);
+        if (data.type === 'status') {
+
+            // console.log("vvvvvvvvvvvv");
+            console.log(pickupCoordinates,"pickupCoordinates");
+            const getUserDetails = await axios.post('/get-user-for-ride',pickupCoordinates);
+
+            console.log(getUserDetails,"getUserDetails");
+           
+        }
+    } catch (error) {
+        console.log('Error parsing message:', error);
+    }
+};
+}
 
         </script>
     </div>

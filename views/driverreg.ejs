@@ -31,11 +31,10 @@
 
             padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             text-align: center;
             margin: 50px;
             color:black;
-            background-color:silver;
+            background-color:black;
         }
 
         .container {
@@ -96,14 +95,17 @@
                     </label>
                     <%} %>
                         E-mail : <input type="email" name="email" value="<%=body.email %>"><br /><br />
-                         Date of birth:<input type="date" name="dob" value="<%=body.dob %>"><br /><br />
-                        <%if(errors.dob){%> <label>
-                                <%=errors.dob%>
-                            </label>
-                            <%}%> 
+                        <%if(errors.email){%> <label>
+                            <%=errors.email%>
+                        </label>
+                        <%}%> 
+                      
 
                                  License Number: <input type="string" name="license"
-                                    value="<%=body.license%>"><br /><br /> 
+                                    value="<%=body.license%>"><br /><br />  <%if(errors.license){%> <label>
+                                        <%=errors.license%>
+                                    </label>
+                                    <%}%> 
                                 year of experience : <input type="number" name="exp" value="<%=body.exp%>"><br /><br />
                                 Upload the license image: <input type="file" name="image" value="<%=body.image%>"
                                     placeholder="jpeg"><br /><br />
@@ -124,6 +126,11 @@
                                 Phone number:<input type="number" name="phone" value="<%=body.phone%>"><br /><br />
                                 <%if(errors.phone){%> <label>
                                     <%=errors.phone%>
+                                </label>
+                                <%}%>
+                                Car Model and Number:<input type="string" name="cartype" placeholder="eg.toyata TN39 K1430" value="<%=body.cartype%>"><br><br>
+                                <%if(errors.cartype){%> <label>
+                                    <%=errors.cartype%>
                                 </label>
                                 <%}%>
                                 <button type="submit">REGISTER</button><br><br>

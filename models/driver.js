@@ -10,7 +10,7 @@ const DriverSchema=mongoose.Schema({
         required:[true,"please enter your email"],
         default:0
     },
-    dob:Date,
+  
     password:{
         type:Number,
         required:true
@@ -35,9 +35,11 @@ const DriverSchema=mongoose.Schema({
         type:Number,
         required:true
     },
-
-
+    cartype:{
+        type:String,
+        required:true
+    }
 
 });
-const Driver=mongoose.model("driver",DriverSchema)
+const Driver=mongoose.model("drivers",DriverSchema)
 module.exports=Driver;

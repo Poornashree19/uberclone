@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { string } = require("zod");
 
 const LatlngSchema = new mongoose.Schema({
     pickupCoordinates: {
@@ -27,6 +28,10 @@ const LatlngSchema = new mongoose.Schema({
     timestamp: {
         type: Date,
         default: Date.now
+    },
+    status:{
+        type: String,
+        default:'none'
     }
 });
 

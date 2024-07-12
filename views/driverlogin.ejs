@@ -28,7 +28,7 @@
           
                padding:0;
                font-family:Arial,sans-serif;
-               background-color:#f4f4f4;
+               background-color:black;
                text-align: center;
                margin: 50px;
        }
@@ -85,8 +85,14 @@
         
         <form name="driver-myform"  action="/driverlogin" method="post">
             <h2>DRIVER LOGIN</h2>
-            Phone number:<input type="number" name="phone" ><br/><br/>    
-            Password : <input type="number" name="password" ><br/><br/>
+            <input type="email" name="email"  placeholder="Enter  your email" value="<%=body.email%>"><br/><br/> 
+            <% if(errors.email) { %>
+                <label><%=errors.email%></label><br>
+            <% } %>   
+            <input type="number" name="password" placeholder="Enter your Password" value="<%=body.password%>"><br/><br/>
+            <% if(errors.password) { %>
+                <label><%=errors.password%></label><br>
+            <% } %>  
            
                  
             <button type="submit">LOGIN</button>

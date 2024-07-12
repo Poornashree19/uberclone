@@ -3,6 +3,7 @@ require('dotenv').config()
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const WebSocket = require('ws');
+const { MongoClient ,ObjectId} = require('mongodb');
 const express = require('express');
 const mongoose = require('mongoose');
 const Passenger = require('./models/passenger.js');
@@ -17,15 +18,18 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const axios = require('axios');
 const { Socket } = require('dgram');
+const http = require('http');
+const Driver = require('./models/driver.js');
 
 
 
-const PORT = 3000;
+const PORT = 5000;
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
+const server = http.createServer(app);
 const TOMTOM_API_KEY = process.env.TOMTOM_API_KEY;
 const genAI = new GoogleGenerativeAI(process.env.Gemini_API_KEY);
 
@@ -135,9 +139,8 @@ app.get('/login', (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const check = await Passenger.find({ email: req.body.email, password: req.body.password })
-
-        //  console.log({check});
-
+        console.log(check);
+        console.log(check[0]?.email);
         if (check.length === 0) {
             throw { message: 'useremail and password mismatched', type: 'match' }
         }
@@ -145,16 +148,16 @@ app.post('/login', async (req, res) => {
             res.send("useremail or password is empty");
         }
 
-
         else {
 
             console.log(6666);
-            const token = jwt.sign({ id: Passenger._id }, 'yourSecretKey', { expiresIn: '24h' });
+            const token = jwt.sign({ id: check[0]?._id }, 'yourSecretKey', { expiresIn: '24h' });
             // console.log(token);
             res.cookie('authToken', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
             // console.log('Set-Cookie: ', res.getHeader('Set-Cookie'));
             // res.send('Login successful and cookie has been set');
-            res.render('riderlocation.ejs', { body: {}, TOMTOM_API_KEY: TOMTOM_API_KEY });
+        
+            res.redirect(`/riderlocation?mail=${encodeURIComponent(check[0]?.email)}`);
 
         }
     }
@@ -180,7 +183,7 @@ app.post('/login', async (req, res) => {
 });
 app.get('/riderlocation', (req, res) => {
     console.log("---->passenger location response");
-    res.render('riderlocation.ejs', { body: {}, TOMTOM_API_KEY, findNearByDriver: "", cartypes: "" });
+    res.render('riderlocation.ejs', { body: {}, TOMTOM_API_KEY });
 })
 app.post('/riderlocation', async (req, res) => {
     // console.log("Request received at /rider");
@@ -201,9 +204,14 @@ app.post('/riderlocation', async (req, res) => {
                 coordinates: [lon, lat]
             }
         };
-        const passengerlatlng = await Passengerlatlng.create(transform);
-        console.log("Passengerlatlng saved successfully:", passengerlatlng);
-
+        // const passengerlatlng = await Passengerlatlng.create(transform);
+        // console.log("Passengerlatlng saved successfully:", passengerlatlng);
+        const passengerlatlng =await Passenger.updateOne(
+           {email},
+           { $set: {pickupCoordinates:transform}} 
+        )
+    
+        
 
         let findNearByDriver = [];
         if (passengerlatlng) {
@@ -222,8 +230,8 @@ app.post('/riderlocation', async (req, res) => {
 
         // res.render('location.ejs', { body: transform, TOMTOM_API_KEY: TOMTOM_API_KEY,findNearByDriver});
         let cartype = await getCartypes();
-        console.log(cartype, "<><><><><><><><><><><><><>");
-        res.send({ findNearByDriver, cartype });
+        console.log(cartype,"car Type");
+        res.send({ findNearByDriver, cartype,TOMTOM_API_KEY });
     } catch (err) {
         console.error("Error processing request:", err);
 
@@ -244,10 +252,10 @@ async function findNearByDriverHelper(lat, lon) {
         if (!lat || !lon) throw new Error("unable to get nearby driver detail.")
 
         let findNearByDriver = [];
-        const minLongitude = lon - 0.5;
-        const maxLongitude = lon + 0.5;
-        const minLatitude = lat - 0.5;
-        const maxLatitude = lat + 0.5;
+        const minLongitude = lon - 0.005;
+        const maxLongitude = lon + 0.005;
+        const minLatitude = lat - 0.005;
+        const maxLatitude = lat + 0.005;
 
         findNearByDriver = await Driverlatlng.find({
             pickupCoordinates: {
@@ -292,75 +300,160 @@ app.post('/passenger', async (req, res) => {
     res.status(200).send({ message: 'Status updated' });
 });
 
-const wss = new WebSocket.Server({ port: 5000 });
-
-wss.on('connection', ws => {
-    console.log('WebSocket client connected');
-
-    ws.on('message', async (message) => {
-        try {
-            console.log(`received: ${message}`);
-            ws.send(`server: ${message}`);
-
-        } catch (error) {
-            console.log("socket error:",error);
-        }
-    });
-
-    ws.on('close', () => {
-        console.log('WebSocket client disconnected');
-    });
-
-    ws.send(`welcome to the web socket!!!!!!!!`)
-});
 
 
 
-// async function broadcastStatusChange() {
-//     console.log("11111111111111111111111111111111111111111111111111");
-//     wss.clients.forEach(client => {
-//         if (client.readyState === WebSocket.OPEN) {
-//             client.send(JSON.stringify({ type: 'waiting', status: "waiting for driver" }));
+
+
+
+
+// const wss = new WebSocket.Server({ port: 5000 });
+
+// wss.on('connection', ws => {
+//     console.log('WebSocket client connected');
+
+//     ws.on('message', async (message) => {
+//         try {
+//             console.log(`received: ${message}`);
+//             ws.send(`server: ${message}`);
+
+//         } catch (error) {
+//             console.log("socket error:",error);
 //         }
 //     });
-// }
+
+//     ws.on('close', () => {
+//         console.log('WebSocket client disconnected');
+//     });
+
+//     ws.send(`welcome to the web socket!!!!!!!!`)
+// });
+
+const uri = 'mongodb+srv://Poornashree:eXhc*h3VPU*fw84@cluster0.tmcwcyg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'; // Replace with your MongoDB connection string
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+let db;
+
+const socketlookupMap = {}
 
 
 
 
-// const lngRange = { $gte: lon - 5, $lte: lon + 5 };
-// const latRange = { $gte: lat - 5, $lte: lat + 5 };
+async function startServer() {
+    try {
+        await client.connect();
+        db = client.db('test'); 
+        console.log('Connected to MongoDB');
 
-// //   const results = await Location.find({
-// //     'coordinates.lat': latRange,
-// //     'coordinates.lng': lngRange
-// //   });
+        // const wss = new WebSocket.Server({ server });
 
-// const findDriver = {
-//     type: "Point",
-//     coordinates: [lngRange,latRange]
-// }
-// console.log(findDriver);
+        const wss = new WebSocket.Server({ port:PORT });
 
+        wss.on('connection', ws => {
+            console.log('WebSocket client connected');
 
-// const minLongitude = lon - 0.5;
-// const maxLongitude = lon + 0.5;
-// const minLatitude = lat - 0.5;
-// const maxLatitude = lat + 0.5;
+            const userId = 111
 
+            const type = 'driver' || 'passenger'
 
-// findNearByDriver = await Driverlatlng.find({
-//     pickupCoordinates: {
-//         $geoWithin: {
-//             $box: [
-//                 [minLongitude, minLatitude],
-//                 [maxLongitude, maxLatitude]
-//             ]
-//         }
-//     }
-// })
+            socketlookupMap[`${type}-${userId}`] = ws
 
+            ws.on('message', async (message) => {
+                try {
+                    console.log(`Received: ${message}`);
+                    const data = JSON.parse(message);
 
+                    
+                    if (data.type === 'status' && data.status === 'waiting for driver') {
+            
+                        try {
+                            const email = data.email;
+                            console.log(data.email,"check sockrt use emsil");
+                            const user_exists=await Passenger.find({email});
+                            console.log(user_exists);
+                          
+                            if(user_exists?.length===0){
+                                throw new Error("user does not exist.")
+                            }
+                            
+                            const userId = user_exists[0]._id;
+
+                            const result = await db.collection('passengers').updateOne(
+                                { _id:userId }, 
+                                { $set: { status: 'waiting' } }
+                            );
+
+                            if (result.matchedCount === 0) {
+                                console.log('No documents found with status "none"');
+                                ws.send(JSON.stringify({ type: 'error', message: 'No documents found with status "none"' }));
+                            } else {
+                                console.log('Status updated in MongoDB', result);
+                                ws.send(JSON.stringify({ type: 'statusUpdated', status: 'waiting' }));
+                            }
+                        } catch (error) {
+                            console.error('Error updating status in MongoDB', error);
+                            ws.send(JSON.stringify({ type: 'error', message: 'Failed to update status in MongoDB' }));
+                        }
+                    } else {
+                        ws.send(JSON.stringify({ type: 'error', message: 'Invalid message format or status' }));
+                    }
+
+                } catch (error) {
+                    console.log("Socket error:", error);
+                }
+            });
+
+            ws.on('close', () => {
+                console.log('WebSocket client disconnected');
+            });
+
+            ws.on('error', (error) => {
+                console.log('WebSocket error:', error);
+            });
+
+            ws.send(JSON.stringify({message:`Welcome to the web socket!`,type:'status'}));
+        });
+
+        console.log(`WebSocket server is running on ws://localhost:${PORT}`);
+    } catch (err) {
+        console.error('Failed to connect to MongoDB', err);
+        process.exit(1);
+    }
+}
+
+startServer();
+
+app.post('/get-user-for-ride', async (req, res) => {
+    try {
+        const {lat,lon} = req.body;
+        console.log(coordinates,"prokfsfhgfv ");
+        
+        if (!lat || !lon) throw new Error("unable to get nearby driver detail.")
+
+            let findNearByDriver = [];
+            const minLongitude = lon - 0.005;
+            const maxLongitude = lon + 0.005;
+            const minLatitude = lat - 0.005;
+            const maxLatitude = lat + 0.005;
+    
+            findNearByDriver = await Passengerlatlng.find({
+                pickupCoordinates: {
+                    $geoWithin: {
+                        $box: [
+                            [minLongitude, minLatitude],
+                            [maxLongitude, maxLatitude]
+                        ]
+                    }
+                }
+            })
+    
+            return findNearByDriver
+
+    } catch (error) {
+        console.error(error);
+        // res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 
 
@@ -490,7 +583,7 @@ app.post('/driverreg', async (req, res) => {
         console.log(req.body, "req.body");
 
         const { password, cpass } = req.body
-        const check = await Passenger.find({ email: req.body.email })
+        const check = await Driver.find({ email: req.body.email })
         if (check.length > 0) { throw { message: 'user already exsists.', type: 'user_exsits' } }
 
         console.log({ check });
@@ -599,7 +692,13 @@ app.post('/driverlocation', async (req, res) => {
         const driverlatlng = await Driverlatlng.create(transformedBody);
         console.log("Driverlatlng saved successfully:", driverlatlng);
 
-        res.render('driverlocation.ejs', { body: transformedBody, TOMTOM_API_KEY: TOMTOM_API_KEY });
+        // res.render('driverlocation.ejs', { body: transformedBody, TOMTOM_API_KEY: TOMTOM_API_KEY });
+        if(driverlatlng?._id) {
+            res.send("driver location added successfully")
+        }
+        else {
+            res.send("something went wrong")
+        }
 
     } catch (error) {
         console.log(888);

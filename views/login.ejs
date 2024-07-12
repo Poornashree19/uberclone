@@ -27,7 +27,7 @@
             width: 100%;
         }
         body {
-            background-image: url(https://assets.carpages.ca/prod-blog/uploads/2020/08/shutterstock_1531909190-scaled-e1598277201620-1536x1283.jpg);
+            background-image: url("https://images.pexels.com/photos/2131623/pexels-photo-2131623.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
             padding: 0;
             font-family: Arial, sans-serif;
             background-color: black;
@@ -37,6 +37,8 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
         .container {
             display: flex;
@@ -83,9 +85,9 @@
   
         <form name="myform" action="/login" method="post">
             <h2><center><u><strong>LOGIN TO RIDE</strong></u></center></h2>
-            <input type="number" name="phone" placeholder="Enter your Phone Number" value="<%=body.phone%>"><br/><br/>
-            <% if(errors.phone) { %>
-                <label><%=errors.phone%></label><br>
+            <input type="email" name="email" placeholder="Enter your Email" value="<%=body.email%>"><br/><br/>
+            <% if(errors.email) { %>
+                <label><%=errors.email%></label><br>
             <% } %>
             <input type="number" name="password" placeholder="Enter your Password" value="<%=body.password%>"><br/><br/>
             <% if(errors.password) { %>
