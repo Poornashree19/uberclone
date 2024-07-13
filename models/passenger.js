@@ -38,23 +38,41 @@ const PassengerSchema=mongoose.Schema({
         type: {
             type: String,
             enum: ['Point'],
-            required: true
+            required: false
         },
         coordinates: {
             type: [Number],
-            required: true,
-            validate: {
-                validator: function(coords) {
-                    return coords.length === 2 &&
-                           coords[0] >= -180 && coords[0] <= 180 &&  
-                           coords[1] >= -90 && coords[1] <= 90;     
-                },
-                message: props => `${props.value} is not a valid coordinate pair.`
-            }
+            required: false,
+            default: []
+            // validate: {
+            //     validator: function(coords) {
+            //         return coords.length === 2 &&
+            //                coords[0] >= -180 && coords[0] <= 180 &&  
+            //                coords[1] >= -90 && coords[1] <= 90;     
+            //     },
+            //     message: props => `${props.value} is not a valid coordinate pair.`
+            // }
         }
     },
-
-
+    dropCoordinates: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: false
+        },
+        coordinates: {
+            type: [Number],
+            required: false,
+            default: []
+        }
+    },
+    driverDetail: {
+        type: {
+            type: [Object],
+            required: false,
+            default: []
+        }
+    },
 
 });
 const Passenger=mongoose.model("passenger",PassengerSchema)

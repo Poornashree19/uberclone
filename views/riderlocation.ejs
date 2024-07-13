@@ -194,6 +194,13 @@
                     <div class="result-box" id="dropoffResultBox"></div>
                 </div>
             </form>
+            <div>
+                <hr class="horizondal" />
+                <p id="heading"></p>
+                <div id="driverName"></div>
+                <div id="driverNumber"></div>
+                <div id="driverCar"></div>
+            </div>
 
         </div>
         <div id="map"></div>
@@ -218,21 +225,21 @@
 
     <script>
         const apiKey = "<%=TOMTOM_API_KEY%>"
-   
-    const params = {};
-      const queryString = window.location.search;
-      const urlParams = new URLSearchParams(queryString);
-      urlParams.forEach((value, key) => {
-        params[key] = value;
-      });
 
-      const user_email = params?.mail;
+        const params = {};
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        urlParams.forEach((value, key) => {
+            params[key] = value;
+        });
 
-      if(user_email) {
-        localStorage.setItem("email",user_email);
-      }
-       console.log(user_email,"user_email");
-       console.log(apiKey,"apikey");
+        const user_email = params?.mail;
+
+        if (user_email) {
+            localStorage.setItem("email", user_email);
+        }
+        console.log(user_email, "user_email");
+        console.log(apiKey, "apikey");
         const map = tt.map({
             key: apiKey,
             container: "map",
@@ -283,7 +290,7 @@
             createMarker(dropoffCoordinates, "Dropoff Location");
             console.log(5);
             let calculateTravelDetails = await calculateRoute(pickupCoordinates, dropoffCoordinates);
-            await sendLocation(pickupCoordinates, calculateTravelDetails);
+            await sendLocation(pickupCoordinates, dropoffCoordinates, calculateTravelDetails);
             // calculateFare(lengthInMeters);
         });
 
@@ -367,12 +374,14 @@
             }
         }
 
-        async function sendLocation(pickupCoordinates, calculateTravelDetails) {
-            console.log(pickupCoordinates, "pickupcoordinates");
+        async function sendLocation(pickupCoordinates, dropoffCoordinates, calculateTravelDetails) {
+            console.log(dropoffCoordinates, "dropoffCoordinates");
+
+            let email = localStorage.getItem("email");
 
             try {
 
-                const response = await axios.post('/riderlocation', pickupCoordinates, { withCredentials: true });
+                const response = await axios.post('/riderlocation', { pickupCoordinates, dropoffCoordinates, email }, { withCredentials: true });
 
                 console.log(response?.data, "gotNearByDriver's");
 
@@ -431,15 +440,16 @@
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('carPopup').style.display = 'block';
         }
-        async function socketFunction () {
+
+        async function socketFunction() {
 
             const socket = new WebSocket('ws://localhost:5000');
 
             socket.onopen = () => {
                 console.log("Connected to web socket..");
-                const message = JSON.stringify({ type: 'status', status: 'waiting for driver',email:user_email });
-            socket.send(message);
-            console.log(`Send: ${message}`);
+                const message = JSON.stringify({ type: 'status', status: 'waiting for driver', email: user_email });
+                socket.send(message);
+                console.log(`Send: ${message}`);
             }
 
             socket.onclose = () => {
@@ -447,22 +457,41 @@
             }
 
             socket.onerror = error => {
-                console.log("Websocket error",error)
+                console.log("Websocket error", error)
             }
 
-           
+
         }
 
-       async function closePopup() {
-        // await axios.post('/PassengerStatus');
-        
+        async function closePopup() {
+            // await axios.post('/PassengerStatus');
+
             await socketFunction();
+            document.getElementById("heading").innerText = "Waiting for Driver response."
+            getDriverResponse();
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('carPopup').style.display = 'none';
         }
 
+        function getDriverResponse() {
+            // let isDriver = false;
+            let findDriverInterval = setInterval(async () => {
+                const driver = await axios.post('/get-driver-detail', { email: user_email });
+                if (driver?.data?.driverDetail?.length > 0) {
+                    // isDriver = true;
+                    clearInterval(findDriverInterval);
+                    console.log(driver?.data)
+                    document.getElementById("heading").innerText = "Driver on the way - Driver detail:"
+                    document.getElementById("driverName").innerText = `Name: ${driver?.data?.driverDetail?.[0]?.name}`;
+                    document.getElementById("driverNumber").innerText = `Phone: ${driver?.data?.driverDetail?.[0]?.phone}`;
+                    document.getElementById("driverCar").innerText = `Vehicle detail: ${driver?.data?.driverDetail?.[0]?.cartype}`;
+                }
+            }, 7000)
+            // if (isDriver) {
+                
+            // }
+        }
 
-      
 
         window.onload = () => {
             // Optionally connect to the WebSocket when the page loads

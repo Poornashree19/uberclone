@@ -11,131 +11,191 @@ add your responsive web
     /* } */
 
 
-   h1 {
-    color: black;
-    padding: 15px;
-    text-align: center;
-}
+        h1 {
+            color: black;
+            padding: 15px;
+            text-align: center;
+        }
 
-h2 {
-    color: white;
-    background-color: black;
-    padding: 15px;
-    text-align: center;
-}
+        h2 {
+            color: white;
+            background-color: black;
+            padding: 15px;
+            text-align: center;
+        }
 
-body {
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-}
+        body {
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
 
-.topnav {
-    overflow: hidden;
-    background-color: black;
-    margin-inline: 22px;
-    margin-top: 2px;
-    position: fixed;
-    width: 100%;
-    height:  44px;
-    top: 0;
-    z-index: 1000;
-    border: 9px solid black;  
-}
+        .topnav {
+            overflow: hidden;
+            background-color: black;
+            margin-inline: 22px;
+            margin-top: 2px;
+            position: fixed;
+            width: 100%;
+            height: 44px;
+            top: 0;
+            z-index: 1000;
+            border: 9px solid black;
+        }
 
-.topnav a {
-    float: left;
-    color: silver;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 17px;
-}
+        .topnav a {
+            float: left;
+            color: silver;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+        }
 
-.topnav a.active {
-    background-color: black;
-    color: silver;
-}
-.left img {
+        .topnav a.active {
+            background-color: black;
+            color: silver;
+        }
+
+        .left img {
             margin-top: -11px;
             width: 100%;
             align-items: left;
         }
-    .content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 20px;
-    margin-top: 70px;
-        
-    }
-    .container {
-        width: 300px;
-        padding: 20px 15px;
-        background-color: silver;
-        border-radius: 4px;
-        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
-        margin: 20px;
-    }
-    .form-group {
-        margin-bottom: 20px;
-    }
-    label {
-        font-weight: bold;
-        display: block;
-        margin-bottom: 5px;
-    }
-    input {
-        height: 40px;
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-    }
-    input:focus {
-        border-color: black;
-        border-bottom-width: 2px;
-    }
-    button {
-        width: 100%;
-        background: none;
-        font-size: 18px;
-        font-weight: 500;
-        background-color: black;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px 15px;
-        cursor: pointer;
-        box-sizing: border-box;
-    }
-    .back-link {
-        display: block;
-        margin-top: 10px;
-        color: black;
-        text-decoration: none;
-        text-align: center;
-    }
-    #map {
-        height: 500px;
-        flex: 1;
-        margin: 20px;
-        
-    }
-    .result-box ul {
-        list-style-type: none;
-        padding: 0;
-    }
-    .result-box li {
-        padding: 5px;
-        cursor: pointer;
-    }
-    .result-box li:hover {
-        background-color: #f0f0f0;
-    }
 
+        .content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+            margin-top: 70px;
+
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 300px;
+            padding: 20px 15px;
+            background-color: silver;
+            border-radius: 4px;
+            box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            height: 40px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: black;
+            border-bottom-width: 2px;
+        }
+
+        #submitButn {
+            width: 100%;
+            background: none;
+            font-size: 18px;
+            font-weight: 500;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .confirmButton {
+            width: 50%;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 6px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 10px;
+            color: black;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        #map {
+            height: 500px;
+            flex: 1;
+            margin: 20px;
+
+        }
+
+        .result-box ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .result-box li {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .result-box li:hover {
+            background-color: #f0f0f0;
+        }
+
+
+        #Popup {
+
+            position: fixed;
+            display: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: whitesmoke;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            border-radius: 5%;
+        }
+
+        #overlay {
+
+            position: fixed;
+            display: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .horizondal {
+            background-color: wheat;
+            color: white;
+            height: 1px;
+            border: none;
+        }
     </style>
 </head>
 
@@ -146,12 +206,13 @@ body {
             <a href="/">BACK</a>
         </div>
     </div>
-  
-  
-  </nav>
 
-        <div class="content">
-            <div class="container">
+
+    </nav>
+
+    <div class="content">
+        <div class="container">
+            <div>
                 <form name="myform" id="routeForm" method="post">
                     <h2>Want a ride</h2>
                     <div class="form-group">
@@ -165,150 +226,278 @@ body {
                 </form>
                 <a class="back-link" href="/">Back</a>
             </div>
-            <div id="map"></div>
+            <div>
+                <hr class="horizondal" />
+                <p>Rider Details:</p>
+                <ol id="userDetails"></ol>
+            </div>
         </div>
+        <div id="map"></div>
+    </div>
 
-        <script src="/autosearch.js"></script>
-        <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/maps/maps-web.min.js"></script>
-        <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/services/services-web.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
-            integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script>
-            const apiKey = "<%=TOMTOM_API_KEY%>"
-            console.log(apiKey);
-            const map = tt.map({
-                key: apiKey,
-                container: "map",
-                center: [77.2090, 28.6139],
-                zoom: 13,
-            });
+    <script src="/autosearch.js"></script>
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/maps/maps-web.min.js"></script>
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.15.0/services/services-web.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
+        integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        const apiKey = "<%=TOMTOM_API_KEY%>"
 
-            let passengerMarker;
+        const params = {};
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        urlParams.forEach((value, key) => {
+            params[key] = value;
+        });
 
-            function createMarker(coordinates, popupText) {
-                console.log("createMarker");
-                const element = document.createElement('div');
-                element.innerHTML = `<img src='https://tse4.mm.bing.net/th?id=OIP.3erT-IGach1Mmd2LMfBfWQHaEf&pid=Api&P=0&h=180' style='width:30px;heigth=30px'>`
-                const marker = new tt.Marker({ element: element }).setLngLat(coordinates);
-                const popup = new tt.Popup({ offset: 30 }).setHTML(popupText);
-                marker.setPopup(popup);
-                marker.addTo(map);
-                return marker;
-            }
+        const driver_email = params?.mail;
+        let driverDetail;
 
-            let pickupCoordinates;
-
-            document.getElementById('routeForm').addEventListener('submit', async function (event) {
-
-                const pickupInput = document.getElementById('pickupInput').value;
-
-                event.preventDefault();
-
-                if (pickupInput && pickupCoordinates) return 
-                
-                // await sendLocation(pickupCoordinates)
-
-                pickupCoordinates = await getCoordinates(pickupInput);
-
-                await sendLocation(pickupCoordinates)
-                
-                console.log(pickupCoordinates, "pickup");
-
-                console.log(123);
-
-                map.flyTo({
-                    center: pickupCoordinates,
-                    essential: true
-                });
-
-                if (passengerMarker) {
-                    passengerMarker.remove();
-                }
-                passengerMarker = createMarker(pickupCoordinates, "Pickup Location");
-
-
-
-
-
-            });
-
-            async function getCoordinates(location) {
-                console.log(location,"----");
-                console.log(encodeURIComponent(location, "encode uri"));
-                const response = await fetch(`https://api.tomtom.com/search/2/search/${encodeURIComponent(location)}.json?key=${apiKey}`);
-                const data = await response.json();
-                if (data.results && data.results.length > 0) {
-                    return data.results[0].position;
-                } else {
-                    alert('Location not found');
-                    throw new Error('Location not found');
-                }
-            }
-
-            async function sendLocation(pickupCoordinates) {
-                console.log(pickupCoordinates,"sendLocation");
-
-                const button = document.getElementById('submitButn');
-
-                const oldText = button.innerText
-
-                button.innerText = 'Loading...'
-
-                try {
-
-                    const response = await axios.post('/driverlocation', pickupCoordinates, { withCredentials: true })
-
-                    let s = await driversocket();
-
-                    console.log(s,"sssssssssssssss");
-
-                    console.log({ response });
-                } catch (err) {
-                    console.error(err);
-                }
-
-                button.innerText = oldText
-
-
-                console.log({ pickupCoordinates },"00000");
-            }
-            console.log("develop");
-async function driversocket(){
-
-console.log("web");
-
-const socket = new WebSocket('ws://localhost:5000'); 
-
-socket.onopen = () => {
-    console.log('Connected to WebSocket server');
-};
-
-socket.onerror = (error) => {
-    console.error('WebSocket error:', error);
-};
-
-socket.onmessage = async(event) => {
-    // console.log(event,"cccccccccccc");
-    try {
-        const data = JSON.parse(event.data);
-
-        console.log("got rply",data);
-        if (data.type === 'status') {
-
-            // console.log("vvvvvvvvvvvv");
-            console.log(pickupCoordinates,"pickupCoordinates");
-            const getUserDetails = await axios.post('/get-user-for-ride',pickupCoordinates);
-
-            console.log(getUserDetails,"getUserDetails");
-           
+        if (driver_email) {
+            localStorage.setItem("driverEmail", driver_email);
         }
-    } catch (error) {
-        console.log('Error parsing message:', error);
-    }
-};
-}
+        console.log(driver_email, "driver_email");
 
-        </script>
+        console.log(apiKey);
+        const map = tt.map({
+            key: apiKey,
+            container: "map",
+            center: [77.2090, 28.6139],
+            zoom: 13,
+        });
+
+        let passengerMarker;
+
+        function createMarker(coordinates, popupText) {
+            console.log("createMarker");
+            const element = document.createElement('div');
+            element.innerHTML = `<img src='https://tse4.mm.bing.net/th?id=OIP.3erT-IGach1Mmd2LMfBfWQHaEf&pid=Api&P=0&h=180' style='width:30px;heigth=30px'>`
+            const marker = new tt.Marker({ element: element }).setLngLat(coordinates);
+            const popup = new tt.Popup({ offset: 30 }).setHTML(popupText);
+            marker.setPopup(popup);
+            marker.addTo(map);
+            return marker;
+        }
+
+        let pickupCoordinates;
+
+        document.getElementById('routeForm').addEventListener('submit', async function (event) {
+
+            const pickupInput = document.getElementById('pickupInput').value;
+
+            event.preventDefault();
+
+            if (pickupInput && pickupCoordinates) return
+
+            // await sendLocation(pickupCoordinates)
+
+            pickupCoordinates = await getCoordinates(pickupInput);
+
+            await sendLocation(pickupCoordinates)
+
+            console.log(pickupCoordinates, "pickup");
+
+            console.log(123);
+
+            map.flyTo({
+                center: pickupCoordinates,
+                essential: true
+            });
+
+            if (passengerMarker) {
+                passengerMarker.remove();
+            }
+            passengerMarker = createMarker(pickupCoordinates, "Pickup Location");
+
+
+
+
+
+        });
+
+        async function getCoordinates(location) {
+            console.log(location, "----");
+            console.log(encodeURIComponent(location, "encode uri"));
+            const response = await fetch(`https://api.tomtom.com/search/2/search/${encodeURIComponent(location)}.json?key=${apiKey}`);
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+                return data.results[0].position;
+            } else {
+                alert('Location not found');
+                throw new Error('Location not found');
+            }
+        }
+
+        async function sendLocation(pickupCoordinates) {
+            console.log(pickupCoordinates, "sendLocation");
+
+            const button = document.getElementById('submitButn');
+
+            const oldText = button.innerText
+
+            button.innerText = 'Loading...'
+
+            try {
+
+                const response = await axios.post('/driverlocation', { pickupCoordinates, email: driver_email }, { withCredentials: true })
+
+                console.log(response?.data, "dfghrvcrifrfudnhnfguygbcgcrbcfygfcbuyg")
+                driverDetail = response?.data;
+
+                let s = await driversocket();
+
+                console.log({ response });
+            } catch (err) {
+                console.error(err);
+            }
+
+            button.innerText = oldText
+
+
+            console.log({ pickupCoordinates }, "00000");
+        }
+        console.log("develop");
+
+        async function driversocket() {
+
+            console.log("web");
+
+            const socket = new WebSocket('ws://localhost:5000');
+
+            socket.onopen = () => {
+                console.log('Connected to WebSocket server');
+            };
+
+            socket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+
+            socket.onmessage = async (event) => {
+                // console.log(event,"cccccccccccc");
+                try {
+                    const data = JSON.parse(event.data);
+
+                    console.log("got rply", data);
+                    if (data.type === 'status') {
+
+                        // console.log("vvvvvvvvvvvv");
+                        console.log(pickupCoordinates, "pickupCoordinates");
+
+                        let customerDetails = await getCustomers(pickupCoordinates)
+
+                        await showPopup({ customerDetails: customerDetails, pickupCoordinates });
+
+                        return
+
+                    }
+                } catch (error) {
+                    console.log('Error parsing message:', error);
+                }
+            };
+        }
+
+        async function getCustomers(pickupCoordinates) {
+            try {
+                const getUserDetails = await axios.post('/get-user-for-ride', pickupCoordinates);
+
+                console.log(getUserDetails?.data, "getUserDetails");
+
+                return getUserDetails?.data
+
+            } catch (error) {
+                console.log(error?.message)
+            }
+        }
+
+        async function showPopup(allData) {
+
+            console.log(allData, "allData")
+
+            const customerDetails = allData?.customerDetails;
+            const pickupCoordinates = allData?.pickupCoordinates;
+            console.log(driverDetail, "driverDetailMmmmmmmmmmm<<<<<<<<<<<>>>>>>>>>>><<<<<<<<<<<>>>>>>>>>>>????????????")
+
+            let userData = customerDetails?.findNearByDriver;
+
+            showCustomers(userData)
+            // const lat = customerDetails?.lat;
+            // const lon = customerDetails?.lon;
+
+            function showCustomers(userDataProp) {
+
+                const userDetailsDiv = document.getElementById('userDetails');
+                if (userDataProp?.length === 0) {
+                    userDetailsDiv.innerHTML = 'Currently no new rides!';
+                }
+                else {
+                    userDetailsDiv.innerHTML = '';
+                }
+
+                userDataProp?.map((data) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Name: ${data?.name}, Phone: ${data?.phone}`;
+
+                    const submitButton = document.createElement('button');
+                    submitButton.setAttribute("class", "confirmButton");
+                    submitButton.innerText = "Confirm";
+                    listItem.appendChild(submitButton);
+
+                    submitButton.addEventListener("click", myFunction);
+
+                    async function myFunction() {
+                        let text;
+                        if (confirm(`Confirm ride with ${data?.name}`) == true) {
+                            text = true;
+                        } else {
+                            text = false;
+                        }
+                        if (text) {
+                            console.log(data,"{}{}{}{}{}{}{}{}{}{}{}{}")
+                            
+                            const pickupCoordinates = {lat:data?.pickupCoordinates?.coordinates[1],lon:data?.pickupCoordinates?.coordinates[0]} ;
+                            console.log(pickupCoordinates, "pickup");
+
+                            const dropoffCoordinates = {lat:data?.dropCoordinates?.coordinates[1],lon:data?.dropCoordinates?.coordinates[0]} ;
+                            console.log(dropoffCoordinates, "drop");
+
+                            map.flyTo({
+                                center: pickupCoordinates,
+                                essential: true
+                            });
+
+                            if (passengerMarker) {
+                                passengerMarker.remove();
+                            }
+                            passengerMarker = createMarker(pickupCoordinates, "Pickup Location");
+                     
+                            createMarker(dropoffCoordinates, "Dropoff Location");
+                     
+                            console.log(driverDetail,pickupCoordinates,dropoffCoordinates, "dfdfdfcvgf........////////")
+                            const confirmRide = await axios.post('/confirm-ride', { id: data?._id, driverDetail })
+                        }
+                    }
+
+                    userDetailsDiv.appendChild(listItem);
+                })
+            }
+
+            setInterval(async () => {
+                const getUserDetails = await getCustomers(pickupCoordinates);
+                userData = getUserDetails?.findNearByDriver;
+                showCustomers(userData)
+            }, 5000)
+
+            // document.getElementById('overlay').style.display = 'block';
+            // document.getElementById('Popup').style.display = 'block';
+        }
+
+        // async function closePopup() {
+
+        //     document.getElementById('overlay').style.display = 'none';
+        //     document.getElementById('Popup').style.display = 'none';
+        // }
+
+    </script>
     </div>
 </body>

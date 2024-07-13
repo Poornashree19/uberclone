@@ -3,7 +3,7 @@ require('dotenv').config()
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const WebSocket = require('ws');
-const { MongoClient ,ObjectId} = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const express = require('express');
 const mongoose = require('mongoose');
 const Passenger = require('./models/passenger.js');
@@ -156,7 +156,7 @@ app.post('/login', async (req, res) => {
             res.cookie('authToken', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
             // console.log('Set-Cookie: ', res.getHeader('Set-Cookie'));
             // res.send('Login successful and cookie has been set');
-        
+
             res.redirect(`/riderlocation?mail=${encodeURIComponent(check[0]?.email)}`);
 
         }
@@ -189,49 +189,75 @@ app.post('/riderlocation', async (req, res) => {
     // console.log("Request received at /rider");
 
     try {
-        console.log("Request body:", req.body);
+        console.log("Request body:---------------->>>", req.body);
 
-        const { lat, lon } = req.body;
+        const { pickupCoordinates, dropoffCoordinates, email } = req.body;
 
-        if (!lat || !lon) {
-            throw new Error("Latitude and longitude are required");
+        const pickup_lat = pickupCoordinates?.lat;
+        const pickup_lon = pickupCoordinates?.lon;
+
+        const drop_lat = dropoffCoordinates?.lat;
+        const drop_lon = dropoffCoordinates?.lon;
+        // const {pickup_lat,pickup_lon} = pickupCoordinates;
+        // const {drop_lat,drop_lon} = dropoffCoordinates;
+
+        if (!pickup_lat || !pickup_lon) {
+            throw new Error("Pickup Latitude and longitude are required");
         }
 
-        const transform = {
-            address: "Some default address",
-            pickupCoordinates: {
-                type: "Point",
-                coordinates: [lon, lat]
-            }
-        };
+        if (!drop_lat || !drop_lon) {
+            throw new Error("Drop Latitude and longitude are required");
+        }
+
+        // const transform = {
+        //     address: "Some default address",
+        //     pickupCoordinates: {
+        //         type: "Point",
+        //         coordinates: [lon, lat]
+        //     }
+        // };
         // const passengerlatlng = await Passengerlatlng.create(transform);
         // console.log("Passengerlatlng saved successfully:", passengerlatlng);
-        const passengerlatlng =await Passenger.updateOne(
-           {email},
-           { $set: {pickupCoordinates:transform}} 
+
+        const pickup_coordinates = [pickup_lon, pickup_lat];
+        const drop_coordinates = [drop_lon, drop_lat];
+
+        const passengerlatlng = await Passenger.updateOne(
+            { email },
+            { $set: { 'pickupCoordinates.coordinates': pickup_coordinates, 'dropCoordinates.coordinates': drop_coordinates } }
         )
-    
-        
+
+        const removeDeriverDetail = await Passenger.updateOne(
+            { email },
+            { $unset: { driverDetail: "" } }
+        )
+        console.log(passengerlatlng,removeDeriverDetail)
+
+        const projection = {driverDetail:1}
+        const ssss = await Passenger.find({email});
+        console.log(ssss,"sssssssoooooopppppppppppppppppppp");
+        console.log(ssss?.[0],"sssssssoooooopppppppppppppppppppp");
+
+
 
         let findNearByDriver = [];
         if (passengerlatlng) {
             console.log("--> is passenger");
 
 
-            console.log(lat, lon, "--------------------------------------------------------------");
-            findNearByDriver = await findNearByDriverHelper(lat, lon);
+            console.log(pickup_lat, pickup_lon, "--------------------------------------------------------------");
+            findNearByDriver = await findNearByDriverHelper(pickup_lat, pickup_lon);
 
-            // console.log(findNearByDriver,"-findNearByDriver");
-            findNearByDriver.map((ans) => console.log(ans.pickupCoordinates.coordinates, "driver and passenger location."))
-            console.log(findNearByDriver, "-findNearByDriver");
+            // findNearByDriver.map((ans) => console.log(ans.pickupCoordinates.coordinates, "driver and passenger location."))
+            // console.log(findNearByDriver, "-findNearByDriver");
 
         }
 
 
         // res.render('location.ejs', { body: transform, TOMTOM_API_KEY: TOMTOM_API_KEY,findNearByDriver});
         let cartype = await getCartypes();
-        console.log(cartype,"car Type");
-        res.send({ findNearByDriver, cartype,TOMTOM_API_KEY });
+        // console.log(cartype, "car Type");
+        res.send({ findNearByDriver, cartype, TOMTOM_API_KEY });
     } catch (err) {
         console.error("Error processing request:", err);
 
@@ -342,12 +368,12 @@ const socketlookupMap = {}
 async function startServer() {
     try {
         await client.connect();
-        db = client.db('test'); 
+        db = client.db('test');
         console.log('Connected to MongoDB');
 
         // const wss = new WebSocket.Server({ server });
 
-        const wss = new WebSocket.Server({ port:PORT });
+        const wss = new WebSocket.Server({ port: PORT });
 
         wss.on('connection', ws => {
             console.log('WebSocket client connected');
@@ -363,23 +389,23 @@ async function startServer() {
                     console.log(`Received: ${message}`);
                     const data = JSON.parse(message);
 
-                    
+
                     if (data.type === 'status' && data.status === 'waiting for driver') {
-            
+
                         try {
                             const email = data.email;
-                            console.log(data.email,"check sockrt use emsil");
-                            const user_exists=await Passenger.find({email});
+                            console.log(data.email, "check sockrt use emsil");
+                            const user_exists = await Passenger.find({ email });
                             console.log(user_exists);
-                          
-                            if(user_exists?.length===0){
+
+                            if (user_exists?.length === 0) {
                                 throw new Error("user does not exist.")
                             }
-                            
+
                             const userId = user_exists[0]._id;
 
                             const result = await db.collection('passengers').updateOne(
-                                { _id:userId }, 
+                                { _id: userId },
                                 { $set: { status: 'waiting' } }
                             );
 
@@ -411,7 +437,7 @@ async function startServer() {
                 console.log('WebSocket error:', error);
             });
 
-            ws.send(JSON.stringify({message:`Welcome to the web socket!`,type:'status'}));
+            ws.send(JSON.stringify({ message: `Welcome to the web socket!`, type: 'status' }));
         });
 
         console.log(`WebSocket server is running on ws://localhost:${PORT}`);
@@ -425,35 +451,89 @@ startServer();
 
 app.post('/get-user-for-ride', async (req, res) => {
     try {
-        const {lat,lon} = req.body;
-        console.log(coordinates,"prokfsfhgfv ");
-        
+        const { lat, lon } = req.body;
+        // console.log(req,"prokfsfhgfv ");
+
         if (!lat || !lon) throw new Error("unable to get nearby driver detail.")
 
-            let findNearByDriver = [];
-            const minLongitude = lon - 0.005;
-            const maxLongitude = lon + 0.005;
-            const minLatitude = lat - 0.005;
-            const maxLatitude = lat + 0.005;
-    
-            findNearByDriver = await Passengerlatlng.find({
-                pickupCoordinates: {
-                    $geoWithin: {
-                        $box: [
-                            [minLongitude, minLatitude],
-                            [maxLongitude, maxLatitude]
-                        ]
-                    }
+        let findNearByDriver = [];
+        const minLongitude = lon - 0.005;
+        const maxLongitude = lon + 0.005;
+        const minLatitude = lat - 0.005;
+        const maxLatitude = lat + 0.005;
+
+        // findNearByDriver = await Passengerlatlng.find({
+        //     pickupCoordinates: {
+        //         $geoWithin: {
+        //             $box: [
+        //                 [minLongitude, minLatitude],
+        //                 [maxLongitude, maxLatitude]
+        //             ]
+        //         }
+        //     }
+        // })
+
+        let projection = { name: 1, phone: 1, pickupCoordinates: 1, dropCoordinates: 1, _id: 1 };
+
+        findNearByDriver = await Passenger.find({
+            'pickupCoordinates.coordinates': {
+                $geoWithin: {
+                    $box: [
+                        [minLongitude, minLatitude],
+                        [maxLongitude, maxLatitude]
+                    ]
                 }
-            })
-    
-            return findNearByDriver
+            },
+            status: "waiting",
+        }, projection)
+
+        // console.log(findNearByDriver, "findNearByDriver- -------=======")
+
+        res.send({ findNearByDriver, lat, lon })
 
     } catch (error) {
         console.error(error);
         // res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+app.post('/get-driver-detail',async (req,res)=> {
+    try {
+        const projection = {driverDetail: 1,dropCoordinates: 1}
+        const getDriver = await Passenger.find({email:req.body.email}, projection);
+        res.send(getDriver[0]);
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+app.post('/confirm-ride', async (req, res) => {
+    try {
+
+        console.log(req?.body,"free fire")
+
+        const id = req?.body?.id;
+        const driverDetail = req?.body?.driverDetail?.getDriverDetail
+
+        console.log(driverDetail,"vcvcvcvcfvfvgbgbhnhnhnujyhuiolkkkpppppppp")
+
+        if(driverDetail) {
+            const userId = new ObjectId(id);
+
+            const result = await db.collection('passengers').updateOne(
+                { _id: userId },
+                { $set: { status: 'confirmed', driverDetail } }
+            );
+    
+            const getUser = await Passenger.find({ _id: userId })
+            console.log(getUser[0]?.pickupCoordinates,getUser[0]?.dropCoordinates,"get user ))__))__))__")
+        }
+
+    } catch (error) {
+        console.log(error?.message);
+    }
+})
+
 
 
 
@@ -643,7 +723,7 @@ app.post('/driverlogin', async (req, res) => {
         else {
             const token = jwt.sign({ id: Passenger._id }, 'yourSecretKey', { expiresIn: '24h' });
             res.cookie('authToken', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
-            res.redirect('/driverlocation');
+            res.redirect(`/driverlocation?mail=${encodeURIComponent(check[0]?.email)}`);
         }
     }
     catch (err) {
@@ -676,11 +756,11 @@ app.get('/driverlocation', (req, res) => {
 app.post('/driverlocation', async (req, res) => {
     console.log(req.body, "clgs");
 
-    try {
-        console.log(11);
-        console.log("req.body:", req.body);
+    const {pickupCoordinates, email} = req.body
 
-        const { lat, lon } = req.body;
+    try {
+
+        const { lat, lon } = pickupCoordinates;
         const transformedBody = {
             address: "Some default address",
             pickupCoordinates: {
@@ -689,12 +769,15 @@ app.post('/driverlocation', async (req, res) => {
             }
         };
 
+        let projection = { name: 1, phone: 1, cartype: 1, _id: 1 };
+        const getDriverDetail = await Driver.find({ email: email },projection);
+
         const driverlatlng = await Driverlatlng.create(transformedBody);
         console.log("Driverlatlng saved successfully:", driverlatlng);
 
         // res.render('driverlocation.ejs', { body: transformedBody, TOMTOM_API_KEY: TOMTOM_API_KEY });
-        if(driverlatlng?._id) {
-            res.send("driver location added successfully")
+        if (driverlatlng?._id || getDriverDetail?.[0]?._id) {
+            res.send({getDriverDetail})
         }
         else {
             res.send("something went wrong")
