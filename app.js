@@ -355,7 +355,7 @@ app.post('/passenger', async (req, res) => {
 //     ws.send(`welcome to the web socket!!!!!!!!`)
 // });
 
-const uri = 'mongodb+srv://Poornashree:eXhc*h3VPU*fw84@cluster0.tmcwcyg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'; // Replace with your MongoDB connection string
+const uri = 'mongodb+srv://Poornashree:eXhc*h3VPU*fw84@cluster0.tmcwcyg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 let db;
