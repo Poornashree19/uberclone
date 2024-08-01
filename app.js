@@ -56,8 +56,6 @@ const PassengerSchema = z.object({
     cpass: z.string().min(6),
     phone: z.string().length(10),
 });
-
-
 app.get('/products', (req, res) => {
     res.render('products.ejs')
 });
