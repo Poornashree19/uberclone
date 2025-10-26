@@ -84,7 +84,7 @@ app.post('/passengerreg', async (req, res) => {
 
         if (check.length > 0) { throw { message: 'user already exsists.', type: 'user_exsits' } }
 
-        console.log({ check });
+        console.log({check});
 
 
         if (password !== cpass) throw { message: 'Password and confirm password must be same.', type: 'pass_miss_match' }
@@ -145,7 +145,6 @@ app.post('/login', async (req, res) => {
         else if (check == "") {
             res.send("useremail or password is empty");
         }
-
         else {
 
             console.log(6666);
@@ -352,22 +351,21 @@ app.post('/passenger', async (req, res) => {
 
 //     ws.send(`welcome to the web socket!!!!!!!!`)
 // });
-
-const uri = 'mongodb+srv://Poornashree:eXhc*h3VPU*fw84@cluster0.tmcwcyg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+// const PORT = process.env.PORT || 8080;
+const uri = process.env.MONGO_DB_URL;
+// const uri = 'mongodb+srv://Poornashree:eXhc*h3VPU*fw84@cluster0.tmcwcyg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 let db;
 
 const socketlookupMap = {}
 
-
-
-
 async function startServer() {
     try {
         await client.connect();
         db = client.db('test');
         console.log('Connected to MongoDB');
+        
 
         // const wss = new WebSocket.Server({ server });
 
@@ -444,8 +442,9 @@ async function startServer() {
         process.exit(1);
     }
 }
-
 startServer();
+
+
 
 app.post('/get-user-for-ride', async (req, res) => {
     try {
@@ -507,65 +506,76 @@ app.post('/get-driver-detail',async (req,res)=> {
 
 app.post('/confirm-ride', async (req, res) => {
     try {
+        console.log(req.body, " Incoming ride confirmation request");
 
-        console.log(req?.body,"free fire")
+        const passengerId = req.body?.id;
+        const driverDetail = req.body?.driverDetail?.getDriverDetail;
 
-        const id = req?.body?.id;
-        const driverDetail = req?.body?.driverDetail?.getDriverDetail
-
-        console.log(driverDetail,"vcvcvcvcfvfvgbgbhnhnhnujyhuiolkkkpppppppp")
-
-        if(driverDetail) {
-            const userId = new ObjectId(id);
-
-            const result = await db.collection('passengers').updateOne(
-                { _id: userId },
-                { $set: { status: 'confirmed', driverDetail } }
-            );
     
-            const getUser = await Passenger.find({ _id: userId })
-            console.log(getUser[0]?.pickupCoordinates,getUser[0]?.dropCoordinates,"get user ))__))__))__")
+        if (!passengerId || !driverDetail) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing passengerId or driverDetail in request body",
+            });
         }
 
+        const userId = new ObjectId(passengerId);
+
+        
+        const updateResult = await db.collection('passengers').updateOne(
+            { _id: userId },
+            { $set: { status: 'confirmed', driverDetail } }
+        );
+
+        if (updateResult.matchedCount === 0) {
+            console.log("No passenger found with this ID:", passengerId);
+            return res.status(404).json({
+                success: false,
+                message: "Passenger not found",
+            });
+        }
+
+       
+        const updatedPassenger = await Passenger.findOne({ _id: userId });
+
+        console.log(
+            "Ride confirmed for passenger:",
+            updatedPassenger?.name,
+            updatedPassenger?.pickupCoordinates,
+            updatedPassenger?.dropCoordinates
+        );
+
+        
+        const passengerSocket = socketlookupMap[`passenger-${passengerId}`];
+        if (passengerSocket) {
+            passengerSocket.send(
+                JSON.stringify({
+                    type: "ride_status",
+                    status: "confirmed",
+                    driverDetail,
+                })
+            );
+            console.log("Notified passenger via WebSocket");
+        } else {
+            console.log("Passenger WebSocket not found, skipping notification");
+        }
+
+        
+        res.status(200).json({
+            success: true,
+            message: "Ride confirmed successfully",
+            data: {
+                passenger: updatedPassenger,
+                driverDetail,
+            },
+        });
     } catch (error) {
-        console.log(error?.message);
-    }
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.get('/chatbot', (req, res) => {
-    res.render('chatbot.ejs');
-})
-
-app.post('/chatbot', async (req, res) => {
-    try {
-        const { prompt } = req.body;
-
-        const model = getGenerativeModel({ apiKey: GEMINI_API_KEY, model: 'gemini-1.5-flash' });
-
-        const result = await model.generateContent(prompt);
-        const text = result.contents[0]?.text || 'No content generated';
-
-        res.json({ text });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Error in /confirm-ride:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error while confirming ride",
+            error: error.message,
+        });
     }
 });
 
@@ -587,44 +597,25 @@ app.post('/chatbot', async (req, res) => {
 
 
 
+// app.get('/chatbot', (req, res) => {
+//     res.render('chatbot.ejs');
+// })
 
+// app.post('/chatbot', async (req, res) => {
+//     try {
+//         const { prompt } = req.body;
 
+//         const model = getGenerativeModel({ apiKey: GEMINI_API_KEY, model: 'gemini-1.5-flash' });
 
+//         const result = await model.generateContent(prompt);
+//         const text = result.contents[0]?.text || 'No content generated';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//         res.json({ text });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
 
 const DriverSchema = z.object({
