@@ -1,8 +1,16 @@
-# Uber Clone
+# URBAN RIDE
 
 A web application that mimics the core functionality of Uber. This project allows users to book rides, drivers to accept rides, and provides real-time location services using the **TomTom API**.
 
 ---
+## LIVE LINK:https://urbanride-kmih.onrender.com/
+
+## Demo Video 🎬
+
+<video width="600" controls>
+  <source src="assets/urbanride.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ## Tech Stack
 
@@ -54,5 +62,15 @@ A web application that mimics the core functionality of Uber. This project allow
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/uber-clone.git
-
+   ```
+2. .env:
+```bash
+   PORT=5000
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+```
+3. To run:
+```bash
+   npm run dev
+   ```
 
