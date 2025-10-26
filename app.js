@@ -354,7 +354,9 @@ app.post('/passenger', async (req, res) => {
 // const PORT = process.env.PORT || 8080;
 const uri = process.env.MONGO_DB_URL;
 // const uri = 'mongodb+srv://Poornashree:eXhc*h3VPU*fw84@cluster0.tmcwcyg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const client = new MongoClient(uri);
 
 let db;
 
@@ -363,9 +365,9 @@ const socketlookupMap = {}
 async function startServer() {
     try {
         await client.connect();
-        db = client.db('test');
+         db = client.db('uberclone');
         console.log('Connected to MongoDB');
-        
+
 
         // const wss = new WebSocket.Server({ server });
 
